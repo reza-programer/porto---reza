@@ -1,0 +1,82 @@
+{
+  "name": "Mohamad Reza Nurpadilah",
+  "title": "Junior Fullstack Developer & Manual QA",
+  "bio": "Passionate Junior Fullstack Developer & Manual Quality Assurance. Experienced in building clean web applications and ensuring software reliability through manual testing, API testing, and quality control.",
+  "avatar": "/images/profile.png",
+  "email": "reza25022003@gmail.com",
+  "phone": "+62 812-2429-0502",
+  "location": "Kuningan, Indonesia",
+  "resumeUrl": "/cv",
+  "socialLinks": {
+    "github": "https://github.com/reza-programer/",
+    "linkedin": "https://www.linkedin.com/in/mohamad-reza-nurpadilah-b68ab7400",
+    "twitter": "",
+    "instagram": "https://instagram.com/kezottt_"
+  },
+  "stats": {
+    "projectsCompleted": 15,
+    "yearsExperience": 1,
+    "certificatesEarned": 5
+  },
+  "skills": [
+    {
+      "category": "Web Development & Frameworks",
+      "skills": [
+        {
+          "name": "Laravel",
+          "level": 90
+        },
+        {
+          "name": "Vue.js",
+          "level": 85
+        },
+        {
+          "name": "CodeIgniter",
+          "level": 85
+        },
+        {
+          "name": "Python",
+          "level": 80
+        },
+        {
+          "name": "JavaScript",
+          "level": 90
+        }
+      ]
+    },
+    {
+      "category": "Database Management",
+      "skills": [
+        {
+          "name": "SQL / MySQL",
+          "level": 90
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 85
+        }
+      ]
+    },
+    {
+      "category": "QA & Testing Tools",
+      "skills": [
+        {
+          "name": "Postman (API Testing)",
+          "level": 90
+        },
+        {
+          "name": "Selenium (Automation)",
+          "level": 85
+        },
+        {
+          "name": "JMeter (Load Test)",
+          "level": 80
+        },
+        {
+          "name": "Jira (Agile Mgmt)",
+          "level": 85
+        }
+      ]
+    }
+  ]
+}

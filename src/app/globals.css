@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf9f5;
+  --foreground: #1e241c;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-mono: var(--font-mono), monospace;
+  --color-cream: #faf9f5;
+  --color-oat: #f3f0e8;
+  --color-sage-light: #eef3ec;
+  --color-sage: #5c7254;
+  --color-sage-dark: #3b4d35;
+  --color-accent: #5c7254;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Crisp Clean Section Backgrounds */
+.section-cream {
+  background-color: #faf9f5;
+}
+
+.section-warm {
+  background-color: #f4f1e8;
+}
+
+.section-sage {
+  background-color: #edf2eb;
+}
+
+.section-dark-sage {
+  background-color: #22301f;
+}
+
+/* Lightweight subtle radial accents (GPU friendly) */
+.mesh-blob-1 {
+  background-image: radial-gradient(circle at 15% 25%, rgba(92, 114, 84, 0.06) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 75%, rgba(92, 114, 84, 0.04) 0%, transparent 45%);
+}
+
+.mesh-blob-2 {
+  background-image: radial-gradient(circle at 85% 25%, rgba(92, 114, 84, 0.06) 0%, transparent 45%),
+                    radial-gradient(circle at 15% 75%, rgba(92, 114, 84, 0.04) 0%, transparent 45%);
+}
+
+/* Subtle dot matrix pattern overlay */
+.dot-matrix {
+  background-image: radial-gradient(#d5ded2 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Smooth GPU-accelerated Marquee Keyframes */
+@keyframes marquee-left {
+  0% { transform: translate3d(0%, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0%, 0, 0); }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-left 35s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-right 35s linear infinite;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+section {
+  position: relative;
+}
+

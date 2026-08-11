@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <rect width="1200" height="800" fill="#090d16" />
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="240" height="800" fill="#0f172a" />
+  <text x="30" y="50" font-family="Arial" font-size="22" font-weight="bold" fill="#38bdf8">Admin Panel</text>
+  
+  <rect x="20" y="100" width="200" height="40" rx="8" fill="#1e293b" />
+  <text x="50" y="125" font-family="Arial" font-size="14" fill="#38bdf8">📊 Dashboard Overview</text>
+
+  <rect x="20" y="155" width="200" height="40" rx="8" fill="transparent" />
+  <text x="50" y="180" font-family="Arial" font-size="14" fill="#94a3b8">📦 Manage Products</text>
+
+  <rect x="20" y="210" width="200" height="40" rx="8" fill="transparent" />
+  <text x="50" y="235" font-family="Arial" font-size="14" fill="#94a3b8">💳 Orders &amp; Sales</text>
+
+  <!-- Main Content -->
+  <g transform="translate(270, 40)">
+    <text x="0" y="30" font-family="Arial" font-size="28" font-weight="bold" fill="#ffffff">Sales Analytics &amp; Revenue</text>
+
+    <!-- Stat Cards -->
+    <rect x="0" y="60" width="270" height="120" rx="12" fill="#1e293b" />
+    <text x="20" y="95" font-family="Arial" font-size="14" fill="#94a3b8">Total Revenue</text>
+    <text x="20" y="145" font-family="Arial" font-size="32" font-weight="bold" fill="#10b981">$48,290.00</text>
+
+    <rect x="300" y="60" width="270" height="120" rx="12" fill="#1e293b" />
+    <text x="320" y="95" font-family="Arial" font-size="14" fill="#94a3b8">Orders Completed</text>
+    <text x="320" y="145" font-family="Arial" font-size="32" font-weight="bold" fill="#38bdf8">1,420</text>
+
+    <rect x="600" y="60" width="270" height="120" rx="12" fill="#1e293b" />
+    <text x="620" y="95" font-family="Arial" font-size="14" fill="#94a3b8">Active Customers</text>
+    <text x="620" y="145" font-family="Arial" font-size="32" font-weight="bold" fill="#f59e0b">890</text>
+
+    <!-- Chart Box -->
+    <rect x="0" y="210" width="870" height="480" rx="16" fill="#1e293b" />
+    <text x="30" y="250" font-family="Arial" font-size="18" font-weight="bold" fill="#ffffff">Monthly Revenue Growth</text>
+    <path d="M 50,600 Q 200,500 350,550 T 650,380 T 820,320" fill="none" stroke="#38bdf8" stroke-width="4" />
+  </g>
+</svg>

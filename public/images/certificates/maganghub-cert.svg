@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="100%" height="100%">
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#ffffff" />
+  
+  <!-- Left Side Stripe -->
+  <rect x="0" y="0" width="80" height="700" fill="#0088cc" />
+  <rect x="920" y="0" width="80" height="700" fill="#0088cc" />
+  <rect x="100" y="30" width="800" height="640" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" rx="8" />
+  
+  <!-- Header Logo & Title -->
+  <g transform="translate(500, 120)" text-anchor="middle">
+    <!-- Emblem -->
+    <path d="M-25,-30 L0,-50 L25,-30 L25,10 L0,30 L-25,10 Z" fill="#004488" />
+    <circle cx="0" cy="-10" r="10" fill="#0088cc" />
+    <text x="0" y="70" font-family="'Times New Roman', Georgia, serif" font-size="36" font-weight="bold" fill="#003366" letter-spacing="4">SERTIFIKAT</text>
+    <text x="0" y="95" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Nomor Sertifikat: SK.001/BNSP/MAGANG/2025</text>
+  </g>
+
+  <!-- Content -->
+  <g transform="translate(500, 280)" text-anchor="middle">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" fill="#475569">Diberikan Kepada:</text>
+    <text x="0" y="55" font-family="'Brush Script MT', 'Great Vibes', cursive, 'Times New Roman'" font-size="48" font-weight="bold" fill="#0f172a">Reza Musthofa</text>
+    <line x1="-200" y1="75" x2="200" y2="75" stroke="#cbd5e1" stroke-width="1" />
+    
+    <text x="0" y="115" font-family="Arial, sans-serif" font-size="15" fill="#334155">Telah mengikuti Program Pemagangan Lulusan Perguruan Tinggi yang dilaksanakan oleh</text>
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#004488">BADAN STANDARDISASI NASIONAL &amp; KEMENAKER RI</text>
+    <text x="0" y="170" font-family="Arial, sans-serif" font-size="14" fill="#334155">sebagai <tspan font-weight="bold" fill="#0088cc">PENGEMBANG SISTEM INFORMASI FULL STACK</tspan></text>
+    <text x="0" y="200" font-family="Arial, sans-serif" font-size="14" fill="#334155">dengan predikat <tspan font-weight="bold" fill="#059669">SANGAT BAIK</tspan>.</text>
+  </g>
+
+  <!-- Footer Signatures -->
+  <g transform="translate(500, 570)">
+    <g transform="translate(-220, 0)" text-anchor="middle">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="13" fill="#64748b">Kepala Pusat Data &amp; Informasi</text>
+      <path d="M-40,25 C-10,15 10,45 40,20" stroke="#004488" stroke-width="2.5" fill="none" />
+      <text x="0" y="60" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Dr. Ir. Hendra, M.T.</text>
+    </g>
+
+    <g transform="translate(220, 0)" text-anchor="middle">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="13" fill="#64748b">Direktur Bina Magang Kemenaker</text>
+      <path d="M-40,30 C0,10 20,50 50,25" stroke="#004488" stroke-width="2.5" fill="none" />
+      <text x="0" y="60" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Drs. Bambang Supriyadi</text>
+    </g>
+  </g>
+</svg>

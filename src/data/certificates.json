@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "title": "DATABASES",
+    "issuer": "CERTIPORT",
+    "date": "2024",
+    "image": "/uploads/1786347629256-72hw5w.png",
+    "description": "Sertifikasi yang menunjukkan kompetensi dalam pengelolaan dan pengolahan database, meliputi pembuatan struktur database, penggunaan SQL untuk mengelola data, serta penerapan konsep dasar database dalam pengembangan sistem informasi.",
+    "credentialUrl": ""
+  },
+  {
+    "id": "2",
+    "title": "Pengembang Sistem Informasi",
+    "issuer": "Maganghub Kemnaker",
+    "date": "2026",
+    "image": "/uploads/1786347803824-ubogwf.png",
+    "description": "Sertifikat yang menunjukkan pengalaman dalam pengembangan aplikasi secara fullstack, meliputi pengembangan frontend dan backend, integrasi database dan API, serta melakukan pengujian aplikasi untuk memastikan fungsi, kualitas, dan kesesuaian sistem dengan kebutuhan.",
+    "credentialUrl": "https://kemnaker.go.id"
+  },
+  {
+    "id": "3",
+    "title": "Magang & Studi Independent",
+    "issuer": "Orbit Future Academy",
+    "date": "2024",
+    "image": "/uploads/1786347942798-7baftl.png",
+    "description": "Program pengembangan kompetensi yang berfokus pada penerapan Artificial Intelligence, mencakup dasar-dasar machine learning, pengolahan data, computer vision, serta pengembangan solusi AI menggunakan Python.",
+    "credentialUrl": ""
+  },
+  {
+    "id": "4",
+    "title": "Program Pembinaan Mahasiswa Wirausaha",
+    "issuer": "Belmawa",
+    "date": "2025",
+    "image": "/uploads/1786348073679-r5hc1f.png",
+    "description": "Program pengembangan kewirausahaan mahasiswa yang berfokus pada pengembangan dan pengelolaan ide bisnis, penyusunan model bisnis, strategi pemasaran, serta pengembangan produk untuk membangun usaha yang berkelanjutan.",
+    "credentialUrl": ""
+  },
+  {
+    "id": "msnw2ll285k5l9hh41m",
+    "title": "MSIB Batch 6",
+    "issuer": "MSIB",
+    "date": "2024",
+    "image": "/uploads/1786406081004-zixvqc.png",
+    "description": "Mengikuti program Magang dan Studi Independen Bersertifikat (MSIB) Batch 6 sebagai Web Developer pada program berbasis Artificial Intelligence. Berkontribusi dalam pengembangan proyek web serta mempelajari penerapan teknologi AI dalam penyelesaian permasalahan berbasis teknologi.",
+    "credentialUrl": ""
+  },
+  {
+    "id": "msnwa4s2ilotcaclbqm",
+    "title": "UNIKU ENGLISH PROFICIENCY TEST",
+    "issuer": "TOEFL",
+    "date": "2025",
+    "image": "/uploads/1786406431859-kkw921.png",
+    "description": "Sertifikat hasil UNIKU English Proficiency Test (UEPT) sebagai bukti kemampuan bahasa Inggris, yang mencakup kemampuan Listening Comprehension, Structure & Written Expression, dan Reading Comprehension.",
+    "credentialUrl": ""
+  }
+]
