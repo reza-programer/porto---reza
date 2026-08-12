@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiMenu, FiX, FiLock, FiArrowUpRight } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { name: 'Home', href: 'home' },
@@ -110,47 +111,88 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile toggle */}
-        <button
+        <motion.button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-slate-700 hover:bg-[#edf1eb] rounded-xl transition-colors"
+          className="md:hidden p-2.5 text-slate-700 bg-[#edf1eb] hover:bg-[#3b4d35] hover:text-white rounded-xl transition-colors shadow-sm"
+          whileTap={{ scale: 0.95 }}
         >
-          {mobileMenuOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
-        </button>
+          <AnimatePresence mode="wait">
+            {mobileMenuOpen ? (
+              <motion.div
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FiX className="w-6 h-6" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FiMenu className="w-6 h-6" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
 
       {/* Mobile Nav */}
-      {mobileMenuOpen && (
-        <div className="md:hidden max-w-sm mx-auto px-4 mt-2">
-          <div className="border border-[#dce4db] rounded-2xl p-3 shadow-xl space-y-1 bg-[#f8f6f0]/95 backdrop-blur-md">
-            {navItems.map((item) => {
-              const isActive = isHomePage && activeSection === item.href;
-              const linkHref = getLinkHref(item.href);
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden max-w-sm mx-auto px-4 mt-3"
+          >
+            <div className="border border-[#dce4db] rounded-2xl p-3 shadow-2xl space-y-1.5 bg-[#f8f6f0]/98 backdrop-blur-xl">
+              {navItems.map((item, index) => {
+                const isActive = isHomePage && activeSection === item.href;
+                const linkHref = getLinkHref(item.href);
 
-              return (
-                <a
-                  key={item.name}
-                  href={linkHref}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-colors ${
-                    isActive ? 'bg-[#edf1eb] text-[#3b4d35] shadow-xs' : 'text-slate-700 hover:bg-white/50'
-                  }`}
-                >
-                  {item.name}
-                </a>
-              );
-            })}
-            <div className="pt-2 border-t border-slate-200">
-              <a
-                href={getLinkHref('contact')}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center py-2.5 text-xs font-bold text-white bg-[#3b4d35] rounded-xl shadow-md"
+                return (
+                  <motion.a
+                    key={item.name}
+                    href={linkHref}
+                    onClick={() => setMobileMenuOpen(false)}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.2 }}
+                    className={`block px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                      isActive
+                        ? 'bg-[#3b4d35] text-white shadow-md'
+                        : 'text-slate-700 hover:bg-white hover:text-[#3b4d35] hover:shadow-sm'
+                    }`}
+                  >
+                    {item.name}
+                  </motion.a>
+                );
+              })}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: navItems.length * 0.05, duration: 0.2 }}
+                className="pt-3 border-t border-slate-200 mt-2"
               >
-                Contact Me
-              </a>
+                <a
+                  href={getLinkHref('contact')}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block text-center py-3 text-xs font-bold text-white bg-gradient-to-r from-[#3b4d35] to-[#5c7254] rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                >
+                  Let's Talk
+                </a>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

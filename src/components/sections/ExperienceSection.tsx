@@ -16,7 +16,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.18,
+      staggerChildren: 0.2,
     },
   },
 };
@@ -53,20 +53,17 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
         />
 
         {/* Timeline Container with Staggered Entrance */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="relative border-l-2 border-[#dce4db] ml-4 sm:ml-8 space-y-8"
-        >
-          {experiences.map((exp) => {
+        <div className="relative border-l-2 border-[#dce4db] ml-4 sm:ml-8 space-y-8">
+          {experiences.map((exp, index) => {
             const isExpanded = !!expandedIds[exp.id];
 
             return (
               <motion.div
                 key={exp.id}
-                variants={itemVariants}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50, y: 25 }}
+                whileInView={{ opacity: 1, x: 0, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.5, delay: index * 0.2, ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number] }}
                 className="relative pl-6 sm:pl-9 group"
               >
                 {/* Custom Timeline Pin */}
@@ -150,7 +147,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
               </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </AnimatedSection>
   );

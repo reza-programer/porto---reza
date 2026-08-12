@@ -26,42 +26,68 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
           {/* Left Content */}
-          <div className="flex-1 text-center lg:text-left">
+          <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.4 }}
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#edf1eb] text-[#3b4d35] border border-[#dce4db] mb-6 shadow-xs">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#edf1eb] text-[#3b4d35] border border-[#dce4db] mb-6 shadow-xs"
+              >
                 <span className="w-2 h-2 rounded-full bg-[#5c7254]" />
                 Available for New Roles &amp; Freelance
-              </div>
+              </motion.div>
 
               {/* Mono greeting */}
-              <div className="text-xs font-mono tracking-widest text-[#5c7254] uppercase mb-3">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: 0.15 }}
+                className="text-xs font-mono tracking-widest text-[#5c7254] uppercase mb-3"
+              >
                 // Hello, I am {profile.name}
-              </div>
+              </motion.div>
 
               {/* Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight leading-[1.1] text-[#20261e]">
+              <motion.h1
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight leading-[1.1] text-[#20261e]"
+              >
                 Junior Fullstack Developer &amp;{' '}
                 <span className="text-[#3b4d35]">
                   Manual Quality Assurance
                 </span>
-              </h1>
+              </motion.h1>
 
               {/* Bio */}
-              <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed mx-auto lg:mx-0">
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: 0.25 }}
+                className="mt-5 text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed mx-auto lg:mx-0"
+              >
                 {profile.bio}
-              </p>
+              </motion.p>
             </motion.div>
 
             {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.4, delay: 0.35 }}
               className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4"
             >
               <a
@@ -85,23 +111,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
 
             {/* Stats Row */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.3 }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.4, delay: 0.45 }}
               className="mt-12 pt-8 border-t border-[#dce4db] grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 text-left"
             >
-              <div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.3, delay: 0.5 }}
+              >
                 <div className="text-3xl font-extrabold text-[#20261e]">{profile.stats.projectsCompleted}+</div>
                 <div className="text-xs text-slate-500 font-medium mt-0.5">Projects Done</div>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.3, delay: 0.55 }}
+              >
                 <div className="text-3xl font-extrabold text-[#20261e]">{profile.stats.yearsExperience}+</div>
                 <div className="text-xs text-slate-500 font-medium mt-0.5">Years Exp.</div>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.3, delay: 0.6 }}
+              >
                 <div className="text-3xl font-extrabold text-[#20261e]">{profile.stats.certificatesEarned}+</div>
                 <div className="text-xs text-slate-500 font-medium mt-0.5">Certifications</div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
 
@@ -110,7 +152,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
             initial={{ opacity: 0, scale: 0.98, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="relative shrink-0"
+            className="relative shrink-0 order-1 lg:order-2"
           >
             {/* Outer Card */}
             <div className="relative bg-white border border-[#dce4db] rounded-3xl p-3 shadow-lg w-72 sm:w-80 lg:w-96">
