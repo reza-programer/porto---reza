@@ -130,6 +130,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
                       <button
                         onClick={() => toggleExpand(exp.id)}
                         className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#3b4d35] hover:text-[#2d3a28] hover:underline focus:outline-none transition-colors"
+                        suppressHydrationWarning
                       >
                         {isExpanded ? (
                           <>

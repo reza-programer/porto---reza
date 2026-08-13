@@ -103,94 +103,128 @@ export const Navbar: React.FC = () => {
 
           <Link
             href="/admin/login"
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-[#edf1eb] rounded-xl transition-colors"
+            className="p-2 opacity-0 hover:opacity-100 text-slate-400 hover:text-slate-700 hover:bg-[#edf1eb] rounded-xl transition-all"
             title="Admin Panel"
+            aria-hidden="true"
           >
             <FiLock className="w-4 h-4" />
           </Link>
         </div>
 
         {/* Mobile toggle */}
-        <motion.button
+        <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2.5 text-slate-700 bg-[#edf1eb] hover:bg-[#3b4d35] hover:text-white rounded-xl transition-colors shadow-sm"
-          whileTap={{ scale: 0.95 }}
+          className="md:hidden p-2.5 text-slate-700 bg-[#edf1eb] hover:bg-[#3b4d35] hover:text-white rounded-xl transition-all duration-300 shadow-sm"
         >
-          <AnimatePresence mode="wait">
-            {mobileMenuOpen ? (
-              <motion.div
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <FiX className="w-6 h-6" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="menu"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <FiMenu className="w-6 h-6" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
+          {mobileMenuOpen ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FiX className="w-6 h-6" />
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FiMenu className="w-6 h-6" />
+            </motion.div>
+          )}
+        </button>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Nav - Sidebar from Right */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden max-w-sm mx-auto px-4 mt-3"
-          >
-            <div className="border border-[#dce4db] rounded-2xl p-3 shadow-2xl space-y-1.5 bg-[#f8f6f0]/98 backdrop-blur-xl">
-              {navItems.map((item, index) => {
-                const isActive = isHomePage && activeSection === item.href;
-                const linkHref = getLinkHref(item.href);
+          <>
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 z-50 md:hidden bg-black/50 backdrop-blur-sm"
+            />
 
-                return (
-                  <motion.a
-                    key={item.name}
-                    href={linkHref}
+            {/* Sidebar */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 right-0 bottom-0 z-50 md:hidden w-80 max-w-[85vw] bg-[#faf9f5] shadow-2xl"
+            >
+              <div className="h-full flex flex-col p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-[#3b4d35] flex items-center justify-center text-white font-black text-sm">
+                      R
+                    </div>
+                    <span className="font-extrabold text-[#20261e] text-lg">
+                      Reza<span className="text-[#5c7254]">.</span>
+                    </span>
+                  </div>
+                  <button
                     onClick={() => setMobileMenuOpen(false)}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.2 }}
-                    className={`block px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? 'bg-[#3b4d35] text-white shadow-md'
-                        : 'text-slate-700 hover:bg-white hover:text-[#3b4d35] hover:shadow-sm'
-                    }`}
+                    className="p-2 hover:bg-[#edf1eb] rounded-lg transition-colors"
                   >
-                    {item.name}
-                  </motion.a>
-                );
-              })}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: navItems.length * 0.05, duration: 0.2 }}
-                className="pt-3 border-t border-slate-200 mt-2"
-              >
-                <a
-                  href={getLinkHref('contact')}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-3 text-xs font-bold text-white bg-gradient-to-r from-[#3b4d35] to-[#5c7254] rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                    <FiX className="w-5 h-5 text-slate-700" />
+                  </button>
+                </div>
+
+                {/* Menu Items */}
+                <div className="flex flex-col gap-2 flex-1">
+                  {navItems.map((item, index) => {
+                    const isActive = isHomePage && activeSection === item.href;
+                    const linkHref = getLinkHref(item.href);
+
+                    return (
+                      <motion.a
+                        key={item.name}
+                        href={linkHref}
+                        onClick={() => setMobileMenuOpen(false)}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                        className={`px-4 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${
+                          isActive
+                            ? 'bg-[#3b4d35] text-white shadow-md'
+                            : 'text-slate-700 hover:bg-white hover:text-[#3b4d35]'
+                        }`}
+                      >
+                        {item.name}
+                      </motion.a>
+                    );
+                  })}
+                </div>
+
+                {/* Contact CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
+                  className="pt-4 border-t border-[#dce4db]"
                 >
-                  Let's Talk
-                </a>
-              </motion.div>
-            </div>
-          </motion.div>
+                  <a
+                    href={getLinkHref('contact')}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-center py-3 bg-[#3b4d35] hover:bg-[#2d3a28] text-white text-sm font-bold rounded-xl shadow-md transition-all duration-200"
+                  >
+                    Let's Talk
+                  </a>
+                </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

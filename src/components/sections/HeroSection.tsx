@@ -115,7 +115,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ profile }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.4, delay: 0.45 }}
-              className="mt-12 pt-8 border-t border-[#dce4db] grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 text-left"
+              className="mt-12 pt-8 border-t border-[#dce4db] grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 text-center"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
