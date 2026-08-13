@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "title": "Arunika Kuningan",
+    "title": "Darma Mizuki",
     "description": "Sistem Booking Hotel — Aplikasi berbasis web yang dirancang untuk memudahkan pengguna dalam mencari hotel, melihat informasi kamar, mengecek ketersediaan, dan melakukan pemesanan secara online melalui antarmuka yang responsif dan mudah digunakan.\n",
     "longDescription": "Sistem Booking Hotel merupakan aplikasi berbasis web yang dikembangkan untuk mempermudah proses pencarian dan pemesanan kamar hotel secara online. Pengguna dapat melihat daftar hotel, mencari kamar berdasarkan kebutuhan, melihat detail kamar, mengecek ketersediaan, menentukan tanggal menginap, serta melakukan proses pemesanan.\n\nSistem ini juga dilengkapi dengan fitur autentikasi pengguna, pengelolaan data hotel dan kamar, manajemen pemesanan, riwayat booking, serta dashboard admin untuk mengelola data hotel, kamar, pengguna, dan reservasi. Aplikasi dirancang dengan tampilan yang responsif dan berfokus pada kemudahan penggunaan serta pengelolaan data yang terstruktur.\n",
     "image": "/uploads/1786351397246-mhlshq.png",
@@ -150,6 +150,29 @@
       "/uploads/1786414569102-m2nbjv.png",
       "/uploads/1786414576188-h22zco.png",
       "/uploads/1786414582924-u1z0dy.png"
+    ]
+  },
+  {
+    "id": "msr63zsvswunbjvdg8",
+    "title": "Manual Testing Hotel System",
+    "description": "Melakukan Manual Testing pada aplikasi Booking Hotel untuk memastikan seluruh fitur berjalan sesuai kebutuhan, meliputi proses login, pencarian hotel, pemilihan kamar, booking, pembayaran, pembatalan, serta validasi data",
+    "longDescription": "Melakukan Manual Testing pada aplikasi Booking Hotel untuk memastikan seluruh fitur dan alur bisnis berjalan sesuai requirement. Pengujian dilakukan mulai dari proses registrasi dan login, pencarian hotel, filter hotel, pemilihan kamar, pengisian data tamu, proses booking, perhitungan harga, pembayaran, booking history, hingga pembatalan reservasi.\n\nDalam proses testing, membuat dan menjalankan Test Scenario dan Test Case yang mencakup positive testing, negative testing, functional testing, validation testing, responsive testing, security testing, dan end-to-end testing. Melakukan pencatatan Actual Result, Expected Result, Status, Priority, dan Severity untuk setiap test case.",
+    "image": "/uploads/1786604284235-ny4nng.png",
+    "tags": [
+      "Manual Testing",
+      "Spreedsheets",
+      "Postman"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2026-08-13",
+    "gallery": [
+      "/uploads/1786604375096-c6jy82.png",
+      "/uploads/1786604380256-73p4w6.png",
+      "/uploads/1786604384416-box341.png",
+      "/uploads/1786604388570-q19yev.png",
+      "/uploads/1786604397519-dgraq6.png"
     ]
   }
 ]
