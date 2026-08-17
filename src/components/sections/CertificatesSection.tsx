@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Card } from '@/components/ui/Card';
@@ -25,68 +26,82 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
   return (
     <AnimatedSection id="certificates" className="py-20 section-cream dot-matrix">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
-        <SectionHeading
-          title="Certificates & Badges"
-          subtitle="Professional certifications and credentials I've earned."
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.4 }}
+        >
+          <SectionHeading
+            title="Certificates & Badges"
+            subtitle="Professional certifications and credentials I've earned."
+          />
+        </motion.div>
 
         {/* Certificates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {certificates.map((cert) => (
-            <Card
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {certificates.map((cert, index) => (
+            <motion.div
               key={cert.id}
-              onClick={() => setSelectedCert(cert)}
-              className="flex flex-col h-full group cursor-pointer hover:-translate-y-1 transition-all duration-300 border-[#dce4db] bg-white shadow-xs hover:shadow-md"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
             >
-              {/* Image Preview Box */}
-              <div className="h-44 bg-[#edf1eb] rounded-xl flex items-center justify-center p-4 mb-5 relative overflow-hidden group-hover:bg-[#edf1eb]/80 transition-colors border border-[#dce4db]/40">
-                {cert.image ? (
-                  <img
-                    src={cert.image}
-                    alt={cert.title}
-                    className="w-full h-full object-contain drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center text-[#5c7254]">
-                    <FiAward className="w-8 h-8" />
+              <Card
+                onClick={() => setSelectedCert(cert)}
+                className="flex flex-col h-full group cursor-pointer hover:-translate-y-2 transition-all duration-300 border-[#dce4db] bg-white shadow-sm hover:shadow-xl rounded-2xl overflow-hidden"
+              >
+                {/* Image Preview Box */}
+                <div className="h-48 bg-gradient-to-br from-[#edf1eb] to-[#f8f6f0] rounded-t-2xl flex items-center justify-center p-4 relative overflow-hidden border-b border-[#dce4db]/30">
+                  {cert.image ? (
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-white shadow-lg flex items-center justify-center text-[#5c7254]">
+                      <FiAward className="w-8 h-8" />
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur-sm text-slate-600 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#3b4d35] hover:text-white">
+                    <FiMaximize2 className="w-4 h-4" />
                   </div>
-                )}
-                <div className="absolute top-3 right-3 p-2 bg-white text-slate-600 rounded-lg shadow-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                  <FiMaximize2 className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="flex flex-col flex-1">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#5c7254] mb-1.5">
-                  <span className="px-2 py-0.5 bg-[#edf1eb] text-[#3b4d35] rounded-md border border-[#dce4db]/40">
-                    {cert.date.substring(0, 4)}
-                  </span>
-                  <span>{cert.issuer}</span>
                 </div>
 
-                <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#5c7254] transition-colors line-clamp-2">
-                  {cert.title}
-                </h3>
+                {/* Info */}
+                <div className="flex flex-col flex-1 p-5">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[#5c7254] mb-2">
+                    <span className="px-2.5 py-1 bg-[#edf1eb] text-[#3b4d35] rounded-lg border border-[#dce4db]/50">
+                      {cert.date.substring(0, 4)}
+                    </span>
+                    <span className="truncate">{cert.issuer}</span>
+                  </div>
 
-                {cert.description && (
-                  <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
-                    {cert.description}
-                  </p>
-                )}
+                  <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#3b4d35] transition-colors line-clamp-2 leading-snug">
+                    {cert.title}
+                  </h3>
 
-                <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                  <span className="flex items-center gap-1">
-                    <FiCalendar className="w-3.5 h-3.5 text-[#5c7254]" />
-                    {cert.date}
-                  </span>
+                  {cert.description && (
+                    <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
+                      {cert.description}
+                    </p>
+                  )}
 
-                  <span className="inline-flex items-center gap-1 font-semibold text-[#5c7254]">
-                    View Document <FiMaximize2 className="w-3 h-3" />
-                  </span>
+                  <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span className="flex items-center gap-1.5">
+                      <FiCalendar className="w-3.5 h-3.5 text-[#5c7254]" />
+                      {cert.date}
+                    </span>
+
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#3b4d35] group-hover:gap-2 transition-all">
+                      View Document <FiMaximize2 className="w-3 h-3" />
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </div>

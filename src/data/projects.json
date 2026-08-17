@@ -78,8 +78,8 @@
   },
   {
     "id": "msn5v16ygvebi9gud3l",
-    "title": "SIMTAH KUNINGAN",
-    "description": "SIMTAH Kuningan — Sistem Informasi Pertanahan Kabupaten Kuningan\nAplikasi berbasis web yang dikembangkan untuk mendukung pengelolaan, penyajian, dan pemantauan informasi pertanahan di Kabupaten Kuningan secara terintegrasi.",
+    "title": "SIMTAH ",
+    "description": "SIMTAH  — Sistem Informasi Pertanahan Kabupaten Kuningan\nAplikasi berbasis web yang dikembangkan untuk mendukung pengelolaan, penyajian, dan pemantauan informasi pertanahan di Kabupaten Kuningan secara terintegrasi.",
     "longDescription": "SIMTAH Kuningan merupakan sistem informasi berbasis web yang dikembangkan untuk mendukung pengelolaan informasi pertanahan di Kabupaten Kuningan. Sistem ini membantu proses pengelolaan dan penyajian data pertanahan secara terstruktur sehingga informasi dapat diakses dan dikelola dengan lebih efektif.\n\nDalam pengembangan project ini, saya terlibat sebagai Frontend Developer dengan menggunakan Vue.js dan Tailwind CSS. Fokus pekerjaan meliputi pengembangan dan penyesuaian antarmuka pengguna, implementasi komponen halaman, pengolahan tampilan data, serta memastikan tampilan aplikasi responsif pada berbagai perangkat.",
     "image": "/uploads/1786361979494-p7n1mm.png",
     "tags": [

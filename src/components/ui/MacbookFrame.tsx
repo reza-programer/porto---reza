@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
@@ -18,20 +18,8 @@ export const MacbookFrame: React.FC<MacbookFrameProps> = ({
   projectId,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   const validImages = images && images.length > 0 ? images : ['/images/projects/project1.svg'];
-
-  // Auto slide images every 3.5 seconds
-  useEffect(() => {
-    if (validImages.length <= 1 || isHovered) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, [validImages.length, isHovered]);
 
   const prevImage = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -113,8 +101,6 @@ export const MacbookFrame: React.FC<MacbookFrameProps> = ({
   return (
     <div
       className={`relative w-full max-w-4xl mx-auto ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* MacBook Screen Bezel */}
       <div className="relative bg-slate-900 rounded-t-[1.2rem] p-2.5 sm:p-3 shadow-2xl border border-slate-800 border-b-0">
