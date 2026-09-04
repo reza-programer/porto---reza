@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiHeart } from 'react-icons/fi';
+import { FiGithub, FiTwitter, FiHeart } from 'react-icons/fi';
+import { FaLinkedin, FaInstagram } from 'react-icons/fa6';
 import type { Profile } from '@/types';
 
 interface FooterProps {
@@ -17,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
           <div>
             <Link href="#home" className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
               <span>{profile.name}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5c7254]"></span>
             </Link>
             <p className="text-sm text-slate-400 mt-1">{profile.title}</p>
           </div>
@@ -29,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
                 href={profile.socialLinks.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all duration-200"
                 aria-label="GitHub"
               >
                 <FiGithub className="w-5 h-5" />
@@ -40,10 +41,10 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
                 href={profile.socialLinks.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-[#0A66C2] hover:bg-white transition-all duration-200"
                 aria-label="LinkedIn"
               >
-                <FiLinkedin className="w-5 h-5" />
+                <FaLinkedin className="w-5 h-5" />
               </a>
             )}
             {profile.socialLinks.twitter && (
@@ -51,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
                 href={profile.socialLinks.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all duration-200"
                 aria-label="Twitter"
               >
                 <FiTwitter className="w-5 h-5" />
@@ -62,10 +63,10 @@ export const Footer: React.FC<FooterProps> = ({ profile }) => {
                 href={profile.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-blue-600 transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-[#E4405F] hover:bg-white transition-all duration-200"
                 aria-label="Instagram"
               >
-                <FiInstagram className="w-5 h-5" />
+                <FaInstagram className="w-5 h-5" />
               </a>
             )}
           </div>

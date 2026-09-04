@@ -24,7 +24,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
   return (
-    <AnimatedSection id="certificates" className="py-20 section-cream dot-matrix">
+    <AnimatedSection id="certificates" className="py-20 section-cream mesh-blob-1">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,64 +43,67 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
           {certificates.map((cert, index) => (
             <motion.div
               key={cert.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.35, delay: index * 0.05 }}
             >
-              <Card
+              <div
                 onClick={() => setSelectedCert(cert)}
-                className="flex flex-col h-full group cursor-pointer hover:-translate-y-2 transition-all duration-300 border-[#dce4db] bg-white shadow-sm hover:shadow-xl rounded-2xl overflow-hidden"
+                className="flex flex-col h-full group cursor-pointer bg-white border border-[#E2DFD6] rounded-2xl overflow-hidden shadow-[0_2px_14px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:border-[#CAD4C5] transition-all duration-250"
               >
-                {/* Image Preview Box */}
-                <div className="h-48 bg-gradient-to-br from-[#edf1eb] to-[#f8f6f0] rounded-t-2xl flex items-center justify-center p-4 relative overflow-hidden border-b border-[#dce4db]/30">
+                {/* Document Sheet Preview Box */}
+                <div className="h-48 sm:h-52 bg-[#FAF9F5] flex items-center justify-center p-3 sm:p-4 relative border-b border-[#E8E5DC]">
                   {cert.image ? (
-                    <img
-                      src={cert.image}
-                      alt={cert.title}
-                      className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500"
-                    />
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <img
+                        src={cert.image}
+                        alt={cert.title}
+                        className="max-w-full max-h-full object-contain rounded-md border border-[#E0DDD5] shadow-xs group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-16 h-16 rounded-2xl bg-white shadow-lg flex items-center justify-center text-[#5c7254]">
-                      <FiAward className="w-8 h-8" />
+                    <div className="w-14 h-14 rounded-2xl bg-white shadow-xs flex items-center justify-center text-[#5c7254]">
+                      <FiAward className="w-7 h-7" />
                     </div>
                   )}
-                  <div className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur-sm text-slate-600 rounded-xl shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#3b4d35] hover:text-white">
-                    <FiMaximize2 className="w-4 h-4" />
+                  <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 bg-[#3B4D35]/90 backdrop-blur-xs text-white text-[11px] font-medium rounded-full shadow-xs opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-1">
+                    <span>Inspect</span>
+                    <FiMaximize2 className="w-3 h-3" />
                   </div>
                 </div>
 
                 {/* Info */}
                 <div className="flex flex-col flex-1 p-5">
                   <div className="flex items-center gap-2 text-xs font-semibold text-[#5c7254] mb-2">
-                    <span className="px-2.5 py-1 bg-[#edf1eb] text-[#3b4d35] rounded-lg border border-[#dce4db]/50">
+                    <span className="px-2 py-0.5 bg-[#EEF3EC] text-[#3B4D35] rounded-md border border-[#DCE4DB] font-mono text-[10px]">
                       {cert.date.substring(0, 4)}
                     </span>
-                    <span className="truncate">{cert.issuer}</span>
+                    <span className="truncate text-slate-500">{cert.issuer}</span>
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-base mb-2 group-hover:text-[#3b4d35] transition-colors line-clamp-2 leading-snug">
+                  <h3 className="font-bold text-[#1E241C] text-base mb-2 group-hover:text-[#3b4d35] transition-colors line-clamp-2 leading-snug">
                     {cert.title}
                   </h3>
 
                   {cert.description && (
-                    <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
+                    <p className="text-xs text-slate-600 line-clamp-2 mb-4 leading-relaxed">
                       {cert.description}
                     </p>
                   )}
 
-                  <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                      <FiCalendar className="w-3.5 h-3.5 text-[#5c7254]" />
+                  <div className="mt-auto pt-3.5 border-t border-[#F0ECE1] flex items-center justify-between text-xs text-slate-500">
+                    <span className="flex items-center gap-1.5 font-mono text-[11px]">
+                      <FiCalendar className="w-3 h-3 text-[#5c7254]" />
                       {cert.date}
                     </span>
 
-                    <span className="inline-flex items-center gap-1 font-semibold text-[#3b4d35] group-hover:gap-2 transition-all">
-                      View Document <FiMaximize2 className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 font-semibold text-[#3b4d35] group-hover:gap-1.5 transition-all text-xs">
+                      View Credential <FiMaximize2 className="w-3 h-3" />
                     </span>
                   </div>
                 </div>
-              </Card>
+              </div>
             </motion.div>
           ))}
         </div>

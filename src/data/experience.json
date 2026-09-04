@@ -1,9 +1,27 @@
 [
   {
-    "id": "msnv89ev2hdkzz8326s",
+    "id": "mtmrs2d8cv7cikczccm",
     "order": 0,
+    "title": "Web App Developer",
+    "company": "Ocean Space Group",
+    "logo": "/uploads/1788515057929-4v6pql.png",
+    "location": "Kota Cirebon",
+    "period": "Agustus 2026 - Present",
+    "description": "Mengembangkan aplikasi web untuk mendukung kebutuhan bisnis dan rekrutmen, termasuk Sistem Manajemen Audit serta Screening CV berbasis AI untuk menganalisis dan mencocokkan kandidat dengan kualifikasi pekerjaan.",
+    "skills": [
+      "Laravel",
+      "Vue.Js",
+      "Python",
+      "Docker",
+      "Navicat"
+    ]
+  },
+  {
+    "id": "msnv89ev2hdkzz8326s",
+    "order": 1,
     "title": "Freelance Web Developer",
     "company": "Jokiin Aja",
+    "logo": "/uploads/1788514774268-c5ayni.png",
     "location": "Kuningan, Indonesia",
     "period": "November 2025 - Present",
     "description": "Mengembangkan berbagai aplikasi web secara freelance untuk kebutuhan proyek akademik dan personal. Bertanggung jawab dalam proses analisis kebutuhan, perancangan database, pengembangan fitur, integrasi API, hingga testing dan deployment aplikasi.",
@@ -20,9 +38,10 @@
   },
   {
     "id": "1",
-    "order": 1,
+    "order": 2,
     "title": "Fullstack Developer",
     "company": "Badan Standardisasi Nasional",
+    "logo": "/uploads/1788514505224-htr8g8.png",
     "location": "Jakarta, Indonesia",
     "period": "November 2025 - Mei 2026",
     "description": "Sebagai Full Stack Developer dan Quality Assurance, berkontribusi dalam pengembangan aplikasi Back Office dan SPARTA menggunakan Laravel, termasuk membangun dan mengelola REST API, mengelola database MySQL, serta melakukan perbaikan aplikasi berdasarkan hasil User Acceptance Testing (UAT). Selain itu, bertanggung jawab melakukan manual testing pada aplikasi SISPK berdasarkan kebutuhan bisnis dan skenario pengujian, mengidentifikasi serta mendokumentasikan bug, melakukan retesting dan regression testing setelah perbaikan, serta berkolaborasi dengan tim developer dan stakeholder untuk memastikan aplikasi berjalan sesuai kebutuhan dan memiliki kualitas yang baik.",
@@ -38,9 +57,10 @@
   },
   {
     "id": "2",
-    "order": 2,
+    "order": 3,
     "title": "Data Entry",
     "company": "Badan Pertanahan Nasional",
+    "logo": "/uploads/1788514611617-ckqg3s.png",
     "location": "Kuningan, Indonesia",
     "period": "Juli 2025 - November 2025",
     "description": "Sebagai Data Entry di Badan Pertanahan Nasional (BPN), bertanggung jawab melakukan input, verifikasi, dan pembaruan lebih dari 3.000 data standar ke dalam sistem database, memastikan keakuratan dan kelengkapan data sesuai ketentuan yang berlaku, melakukan quality control untuk meminimalkan duplikasi maupun kesalahan input, serta menyusun dan merekap laporan hasil input dan validasi data menggunakan Microsoft Excel untuk mendukung proses monitoring dan pelaporan.",
@@ -53,9 +73,10 @@
   },
   {
     "id": "3",
-    "order": 3,
+    "order": 4,
     "title": "Web Developer",
     "company": "Orbit Future Academy",
+    "logo": "/uploads/1788514621584-58nbcq.jpg",
     "location": "Jakarta, Indonesia",
     "period": "Februari 2024 - Juli 2024",
     "description": "Sebagai Web Developer dalam program MSIB bidang Artificial Intelligence, berkolaborasi dalam pengembangan website berbasis Computer Vision untuk deteksi objek secara real-time menggunakan algoritma YOLOv5. Bertanggung jawab dalam pengembangan antarmuka web, integrasi model AI, serta memastikan komunikasi data antara frontend, backend, dan model machine learning berjalan dengan baik. Selain itu, terlibat dalam pengolahan dataset, proses training dan pengujian model, serta optimasi sistem untuk meningkatkan performa dan akurasi deteksi objek.",

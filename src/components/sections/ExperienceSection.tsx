@@ -75,13 +75,27 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
                 <div className="bg-white border border-[#dce4db] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 hover:border-[#b8c9b3]">
                   {/* Top Bar: Role & Period */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-[#20261e] group-hover:text-[#3b4d35] transition-colors flex items-center gap-2">
-                        {exp.title}
-                      </h3>
-                      <div className="text-sm font-semibold text-[#5c7254] flex items-center gap-1.5 mt-1">
-                        <FiBriefcase className="w-4 h-4 shrink-0 text-[#5c7254]" />
-                        {exp.company}
+                    <div className="flex items-start sm:items-center gap-3.5">
+                      {exp.logo ? (
+                        <div className="w-12 h-12 rounded-xl border border-[#dce4db] bg-white p-1.5 flex items-center justify-center shrink-0 shadow-xs group-hover:border-[#b8c9b3] transition-colors">
+                          <img
+                            src={exp.logo}
+                            alt={exp.company}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-[#edf1eb] border border-[#dce4db] flex items-center justify-center text-[#5c7254] shrink-0">
+                          <FiBriefcase className="w-5 h-5" />
+                        </div>
+                      )}
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-[#20261e] group-hover:text-[#3b4d35] transition-colors">
+                          {exp.title}
+                        </h3>
+                        <div className="text-sm font-semibold text-[#5c7254] mt-0.5">
+                          {exp.company}
+                        </div>
                       </div>
                     </div>
 

@@ -11,10 +11,9 @@ import {
   FiPhone,
   FiSend,
   FiCheckCircle,
-  FiLinkedin,
-  FiInstagram,
   FiArrowUpRight,
 } from 'react-icons/fi';
+import { FaLinkedin, FaInstagram } from 'react-icons/fa6';
 import type { Profile } from '@/types';
 
 interface ContactSectionProps {
@@ -59,100 +58,103 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <SectionHeading
           title="Get In Touch"
-          subtitle="Punya ide proyek atau ingin berdiskusi? Silakan hubungi saya atau kirim pesan!"
+          subtitle="Punya ide proyek atau ingin berdiskusi? Silakan hubungi saya melalui jalur di bawah atau kirim pesan langsung!"
         />
 
-        {/* Top Hubungi Saya Via Social Cards */}
+        {/* Official Social Channels Cards */}
         <div className="mb-12">
-          <div className="text-xs font-mono tracking-widest text-[#5c7254] uppercase mb-4 font-bold">
-            // HUBUNGI SAYA VIA
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* LinkedIn */}
+            {/* Real LinkedIn Official Card */}
             {profile.socialLinks?.linkedin && (
               <a
                 href={profile.socialLinks.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-white border border-[#dce4db] rounded-2xl shadow-xs hover:shadow-md hover:border-[#5c7254] transition-all group"
+                className="flex items-center justify-between p-4 bg-white border border-[#E2DFD6] rounded-2xl shadow-xs hover:shadow-md hover:border-[#0A66C2] transition-all group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center shrink-0">
-                    <FiLinkedin className="w-5 h-5" />
+                  {/* Official LinkedIn Blue Square Icon */}
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <FaLinkedin className="w-6 h-6 text-[#0A66C2]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#5c7254] transition-colors">
+                    <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#0A66C2] transition-colors">
                       LinkedIn
                     </h4>
-                    <p className="text-xs text-slate-500 font-mono truncate max-w-[180px]">
-                      mohamad-reza-nurpadilah-b68ab7400
+                    <p className="text-xs text-slate-500 font-mono truncate max-w-[170px]">
+                      Mohamad Reza Nurpadilah
                     </p>
                   </div>
                 </div>
-                <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#5c7254] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#0A66C2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             )}
 
-            {/* Gmail */}
+            {/* Official Gmail Card */}
             <a
               href={`mailto:${profile.email}`}
-              className="flex items-center justify-between p-4 bg-white border border-[#dce4db] rounded-2xl shadow-xs hover:shadow-md hover:border-[#5c7254] transition-all group"
+              className="flex items-center justify-between p-4 bg-white border border-[#E2DFD6] rounded-2xl shadow-xs hover:shadow-md hover:border-[#EA4335] transition-all group"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#ea4335]/10 text-[#ea4335] flex items-center justify-center shrink-0">
-                  <FiMail className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22 6c0-.6-.2-1.1-.6-1.5L12 12 2.6 4.5C2.2 4.9 2 5.4 2 6v12c0 1.1.9 2 2 2h2V9.8l6 4.7 6-4.7V20h2c1.1 0 2-.9 2-2V6z"/>
+                    <path fill="#34A853" d="M20 20h-2V9.8l4-3.1V18c0 1.1-.9 2-2 2z"/>
+                    <path fill="#EA4335" d="M4 20h2V9.8L2 6.7V18c0 1.1.9 2 2 2z"/>
+                    <path fill="#FBBC05" d="M12 14.5l6-4.7V4.5L12 9 6 4.5v5.3l6 4.7z"/>
+                  </svg>
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#5c7254] transition-colors">
+                  <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#EA4335] transition-colors">
                     Gmail
                   </h4>
-                  <p className="text-xs text-slate-500 font-mono truncate max-w-[180px]">
+                  <p className="text-xs text-slate-500 font-mono truncate max-w-[170px]">
                     {profile.email}
                   </p>
                 </div>
               </div>
-              <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#5c7254] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#EA4335] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
 
-            {/* Instagram */}
+            {/* Official Instagram Card */}
             {profile.socialLinks?.instagram && (
               <a
                 href={profile.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-white border border-[#dce4db] rounded-2xl shadow-xs hover:shadow-md hover:border-[#5c7254] transition-all group"
+                className="flex items-center justify-between p-4 bg-white border border-[#E2DFD6] rounded-2xl shadow-xs hover:shadow-md hover:border-[#E4405F] transition-all group"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#e4405f]/10 text-[#e4405f] flex items-center justify-center shrink-0">
-                    <FiInstagram className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                    <FaInstagram className="w-5 h-5 text-[#E4405F]" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#5c7254] transition-colors">
+                    <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#E4405F] transition-colors">
                       Instagram
                     </h4>
-                    <p className="text-xs text-slate-500 font-mono truncate max-w-[180px]">
-                      instagram.com/kezottt_
+                    <p className="text-xs text-slate-500 font-mono truncate max-w-[170px]">
+                      @kezottt_
                     </p>
                   </div>
                 </div>
-                <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#5c7254] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <FiArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#E4405F] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Contact Info */}
+          {/* Direct Details Info */}
           <div className="space-y-4">
-            <Card className="flex items-start gap-4 bg-white border-[#dce4db] shadow-xs">
-              <div className="p-3 rounded-xl bg-[#edf1eb] text-[#3b4d35] shrink-0 mt-0.5">
+            <Card className="flex items-start gap-4 bg-white border-[#E2DFD6] shadow-xs">
+              <div className="p-3 rounded-xl bg-[#EEF3EC] text-[#3B4D35] shrink-0 mt-0.5">
                 <FiMail className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 text-sm">Email Me</h4>
+                <h4 className="font-semibold text-slate-900 text-sm">Direct Email</h4>
                 <a
                   href={`mailto:${profile.email}`}
-                  className="text-sm text-slate-600 hover:text-[#5c7254] transition-colors"
+                  className="text-sm text-slate-600 hover:text-[#5C7254] transition-colors break-all"
                 >
                   {profile.email}
                 </a>
@@ -160,26 +162,26 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
             </Card>
 
             {profile.phone && (
-              <Card className="flex items-start gap-4 bg-white border-[#dce4db] shadow-xs">
-                <div className="p-3 rounded-xl bg-[#edf1eb] text-[#3b4d35] shrink-0 mt-0.5">
+              <Card className="flex items-start gap-4 bg-white border-[#E2DFD6] shadow-xs">
+                <div className="p-3 rounded-xl bg-[#EEF3EC] text-[#3B4D35] shrink-0 mt-0.5">
                   <FiPhone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900 text-sm">Call / WhatsApp</h4>
+                  <h4 className="font-semibold text-slate-900 text-sm">WhatsApp / Phone</h4>
                   <a
                     href="https://wa.me/6281224290502"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-slate-600 hover:text-[#5c7254] transition-colors"
+                    className="text-sm text-slate-600 hover:text-[#5C7254] transition-colors"
                   >
-                    081224290502 (+62 812-2429-0502)
+                    +62 812-2429-0502
                   </a>
                 </div>
               </Card>
             )}
 
-            <Card className="flex items-start gap-4 bg-white border-[#dce4db] shadow-xs">
-              <div className="p-3 rounded-xl bg-[#edf1eb] text-[#3b4d35] shrink-0 mt-0.5">
+            <Card className="flex items-start gap-4 bg-white border-[#E2DFD6] shadow-xs">
+              <div className="p-3 rounded-xl bg-[#EEF3EC] text-[#3B4D35] shrink-0 mt-0.5">
                 <FiMapPin className="w-5 h-5" />
               </div>
               <div>
@@ -191,7 +193,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card className="bg-white border-[#dce4db] shadow-xs p-6 sm:p-8">
+            <Card className="bg-white border-[#E2DFD6] shadow-xs p-6 sm:p-8">
               {submitted ? (
                 <div className="py-12 text-center space-y-4">
                   <FiCheckCircle className="w-16 h-16 text-emerald-500 mx-auto" />
@@ -226,7 +228,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="Masukkan nama Anda"
-                        className="w-full px-4 py-2.5 rounded-xl border border-[#dce4db] bg-slate-50/50 focus:ring-2 focus:ring-[#5c7254] focus:border-[#5c7254] outline-none text-slate-900 text-sm transition-all"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[#DCE4DB] bg-[#FAF9F5] focus:ring-2 focus:ring-[#5C7254] focus:border-[#5C7254] outline-none text-slate-900 text-sm transition-all"
                       />
                     </div>
 
@@ -240,7 +242,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="email@contoh.com"
-                        className="w-full px-4 py-2.5 rounded-xl border border-[#dce4db] bg-slate-50/50 focus:ring-2 focus:ring-[#5c7254] focus:border-[#5c7254] outline-none text-slate-900 text-sm transition-all"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[#DCE4DB] bg-[#FAF9F5] focus:ring-2 focus:ring-[#5C7254] focus:border-[#5C7254] outline-none text-slate-900 text-sm transition-all"
                       />
                     </div>
                   </div>
@@ -255,7 +257,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Halo Reza, saya ingin mendiskusikan proyek..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-[#dce4db] bg-slate-50/50 focus:ring-2 focus:ring-[#5c7254] focus:border-[#5c7254] outline-none text-slate-900 text-sm transition-all resize-none"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#DCE4DB] bg-[#FAF9F5] focus:ring-2 focus:ring-[#5C7254] focus:border-[#5C7254] outline-none text-slate-900 text-sm transition-all resize-none"
                     />
                   </div>
 
@@ -264,7 +266,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
                     variant="primary"
                     size="lg"
                     disabled={loading}
-                    className="w-full sm:w-auto bg-[#3b4d35] hover:bg-[#2d3a28]"
+                    className="w-full sm:w-auto font-semibold px-6 py-3 rounded-full cursor-pointer"
                     icon={<FiSend className="w-4 h-4" />}
                   >
                     {loading ? 'Mengirim...' : 'Kirim Pesan'}

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiMenu, FiX, FiLock, FiArrowUpRight } from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { name: 'Home', href: 'home' },
@@ -21,6 +20,18 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,17 +66,25 @@ export const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link href="/#home" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-[#3b4d35] flex items-center justify-center text-[#f8f6f0] font-black text-lg shadow-xs group-hover:scale-105 transition-transform">
-            R
+        {/* Brand Logo - Personal Avatar Mark */}
+        <Link href="/#home" className="flex items-center gap-3 group">
+          <div className="relative shrink-0">
+            <img
+              src="/images/profile.png"
+              alt="Mohamad Reza Nurpadilah"
+              className="w-10 h-10 rounded-full object-cover object-top border border-[#DCE4DB] ring-2 ring-white shadow-xs group-hover:scale-105 transition-transform"
+            />
+            <span
+              className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"
+              title="Available for projects"
+            />
           </div>
           <div>
-            <span className="font-extrabold text-[#20261e] tracking-tight text-lg group-hover:text-[#5c7254] transition-colors">
+            <span className="font-extrabold text-[#20261e] tracking-tight text-base group-hover:text-[#5c7254] transition-colors">
               Reza<span className="text-[#5c7254]">.</span>
             </span>
-            <span className="block text-[10px] font-semibold text-slate-400 -mt-1 tracking-wider uppercase">
-              Developer
+            <span className="block text-[10px] font-semibold text-slate-500 -mt-0.5 tracking-wider uppercase">
+              Fullstack & QA
             </span>
           </div>
         </Link>
@@ -114,119 +133,108 @@ export const Navbar: React.FC = () => {
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2.5 text-slate-700 bg-[#edf1eb] hover:bg-[#3b4d35] hover:text-white rounded-xl transition-all duration-300 shadow-sm"
+          className="md:hidden p-2.5 text-slate-700 bg-[#edf1eb] hover:bg-[#3b4d35] hover:text-white rounded-xl transition-colors duration-150 shadow-xs cursor-pointer"
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           {mobileMenuOpen ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-            >
-              <FiX className="w-6 h-6" />
-            </motion.div>
+            <FiX className="w-6 h-6" />
           ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-            >
-              <FiMenu className="w-6 h-6" />
-            </motion.div>
+            <FiMenu className="w-6 h-6" />
           )}
         </button>
       </div>
 
-      {/* Mobile Nav - Sidebar from Right */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 z-50 md:hidden bg-black/50 backdrop-blur-sm"
-            />
+      {/* Mobile Nav - Full Screen Smooth Minimal Overlay */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden bg-[#FAF9F5] flex flex-col justify-between p-6 sm:p-8 transition-opacity duration-200 ease-in-out ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!mobileMenuOpen}
+      >
+        {/* Top Header Bar */}
+        <div className="flex items-center justify-between pb-5 border-b border-[#E8E5DC]">
+          <Link
+            href="/#home"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3"
+          >
+            <div className="relative shrink-0">
+              <img
+                src="/images/profile.png"
+                alt="Reza"
+                className="w-10 h-10 rounded-full object-cover object-top border border-[#DCE4DB] ring-2 ring-white shadow-xs"
+              />
+              <span
+                className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-white"
+                title="Available"
+              />
+            </div>
+            <div>
+              <span className="font-extrabold text-[#20261e] tracking-tight text-lg">
+                Reza<span className="text-[#5c7254]">.</span>
+              </span>
+              <span className="block text-[11px] font-semibold text-slate-500 -mt-0.5 tracking-wider uppercase">
+                Fullstack & QA
+              </span>
+            </div>
+          </Link>
 
-            {/* Sidebar */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed top-0 right-0 bottom-0 z-50 md:hidden w-80 max-w-[85vw] bg-[#faf9f5] shadow-2xl"
-            >
-              <div className="h-full flex flex-col p-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#3b4d35] flex items-center justify-center text-white font-black text-sm">
-                      R
-                    </div>
-                    <span className="font-extrabold text-[#20261e] text-lg">
-                      Reza<span className="text-[#5c7254]">.</span>
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 hover:bg-[#edf1eb] rounded-lg transition-colors"
-                  >
-                    <FiX className="w-5 h-5 text-slate-700" />
-                  </button>
-                </div>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            className="p-2.5 bg-white hover:bg-[#EEF3EC] text-slate-700 rounded-full border border-[#DCE4DB] transition-colors cursor-pointer shadow-xs"
+            aria-label="Close menu"
+          >
+            <FiX className="w-5 h-5" />
+          </button>
+        </div>
 
-                {/* Menu Items */}
-                <div className="flex flex-col gap-2 flex-1">
-                  {navItems.map((item, index) => {
-                    const isActive = isHomePage && activeSection === item.href;
-                    const linkHref = getLinkHref(item.href);
+        {/* Navigation Links - Clean Minimal Typography */}
+        <div className="flex flex-col justify-center flex-1 py-6 space-y-1">
+          {navItems.map((item) => {
+            const isActive = isHomePage && activeSection === item.href;
+            const linkHref = getLinkHref(item.href);
 
-                    return (
-                      <motion.a
-                        key={item.name}
-                        href={linkHref}
-                        onClick={() => setMobileMenuOpen(false)}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
-                        className={`px-4 py-3 text-base font-semibold rounded-xl transition-all duration-200 ${
-                          isActive
-                            ? 'bg-[#3b4d35] text-white shadow-md'
-                            : 'text-slate-700 hover:bg-white hover:text-[#3b4d35]'
-                        }`}
-                      >
-                        {item.name}
-                      </motion.a>
-                    );
-                  })}
-                </div>
+            return (
+              <a
+                key={item.name}
+                href={linkHref}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center justify-between py-4 px-2 border-b border-[#F0ECE1] transition-colors ${
+                  isActive
+                    ? 'text-[#3B4D35] font-bold'
+                    : 'text-[#1E241C] hover:text-[#5C7254] font-semibold'
+                }`}
+              >
+                <span className="text-2xl tracking-tight">
+                  {item.name}
+                </span>
+                {isActive ? (
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#3B4D35]" />
+                ) : (
+                  <FiArrowUpRight className="w-5 h-5 text-slate-300" />
+                )}
+              </a>
+            );
+          })}
+        </div>
 
-                {/* Contact CTA */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ delay: navItems.length * 0.05, duration: 0.3 }}
-                  className="pt-4 border-t border-[#dce4db]"
-                >
-                  <a
-                    href={getLinkHref('contact')}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center py-3 bg-[#3b4d35] hover:bg-[#2d3a28] text-white text-sm font-bold rounded-xl shadow-md transition-all duration-200"
-                  >
-                    Let's Talk
-                  </a>
-                </motion.div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+        {/* Bottom Footer Section */}
+        <div className="pt-5 border-t border-[#E8E5DC] space-y-4">
+          <a
+            href={getLinkHref('contact')}
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-center gap-2 w-full py-3.5 bg-[#3B4D35] hover:bg-[#2D3A28] text-white text-base font-semibold rounded-full shadow-xs transition-colors"
+          >
+            <span>Let's Talk</span>
+            <FiArrowUpRight className="w-4 h-4" />
+          </a>
+
+          <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
+            <span>📍 Kuningan, Indonesia</span>
+            <span className="text-[#5C7254] font-semibold">● Open for Work</span>
+          </div>
+        </div>
+      </div>
     </header>
   );
 };

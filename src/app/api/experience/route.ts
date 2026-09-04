@@ -10,15 +10,18 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const currentExperiences = getExperience();
+    const minOrder = currentExperiences.length > 0 ? Math.min(...currentExperiences.map((e) => e.order)) : 0;
     const newExperience: Experience = {
       id: generateId(),
       title: body.title,
       company: body.company,
+      logo: body.logo || '',
       location: body.location || '',
       period: body.period,
       description: body.description,
       skills: body.skills || [],
-      order: body.order || Date.now(),
+      order: typeof body.order === 'number' ? body.order : minOrder - 1,
     };
 
     saveExperience(newExperience);

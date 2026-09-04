@@ -4,13 +4,13 @@
     "title": "Darma Mizuki",
     "description": "Sistem Booking Hotel — Aplikasi berbasis web yang dirancang untuk memudahkan pengguna dalam mencari hotel, melihat informasi kamar, mengecek ketersediaan, dan melakukan pemesanan secara online melalui antarmuka yang responsif dan mudah digunakan.\n",
     "longDescription": "Sistem Booking Hotel merupakan aplikasi berbasis web yang dikembangkan untuk mempermudah proses pencarian dan pemesanan kamar hotel secara online. Pengguna dapat melihat daftar hotel, mencari kamar berdasarkan kebutuhan, melihat detail kamar, mengecek ketersediaan, menentukan tanggal menginap, serta melakukan proses pemesanan.\n\nSistem ini juga dilengkapi dengan fitur autentikasi pengguna, pengelolaan data hotel dan kamar, manajemen pemesanan, riwayat booking, serta dashboard admin untuk mengelola data hotel, kamar, pengguna, dan reservasi. Aplikasi dirancang dengan tampilan yang responsif dan berfokus pada kemudahan penggunaan serta pengelolaan data yang terstruktur.\n",
-    "image": "/uploads/1786351397246-mhlshq.png",
+    "image": "/uploads/1786351717546-mr3jy1.png",
     "gallery": [
+      "/uploads/1786351397246-mhlshq.png",
       "/uploads/1786351680753-q7ycg9.png",
       "/uploads/1786351689058-wp8nel.png",
       "/uploads/1786351702834-cd5n3o.png",
       "/uploads/1786351710434-stfgxi.png",
-      "/uploads/1786351717546-mr3jy1.png",
       "/uploads/1786351733250-a0ep92.png",
       "/uploads/1786351743536-ptn3jp.png",
       "/uploads/1786351751327-9ca7am.png",
@@ -33,10 +33,10 @@
     "title": "SPARTA",
     "description": "SPARTA — Sistem Penjualan Alat Laboratorium\nAplikasi e-commerce berbasis web menggunakan Laravel yang dirancang untuk memudahkan pengguna dalam mencari, memilih, dan melakukan pembelian berbagai alat serta kebutuhan laboratorium secara online.\n",
     "longDescription": "SPARTA merupakan aplikasi e-commerce berbasis web yang dikembangkan menggunakan Laravel untuk mendukung proses penjualan berbagai alat dan kebutuhan laboratorium secara online. Aplikasi ini menyediakan katalog produk yang memungkinkan pengguna melihat informasi produk, kategori, harga, stok, serta melakukan proses pembelian.",
-    "image": "/uploads/1786360852074-0d62yb.png",
+    "image": "/uploads/1786360888915-wynpub.png",
     "gallery": [
+      "/uploads/1786360852074-0d62yb.png",
       "/uploads/1786360865027-qxatqc.png",
-      "/uploads/1786360888915-wynpub.png",
       "/uploads/1786360888896-9l5z4t.png",
       "/uploads/1786360888902-ymdzw4.png"
     ],
@@ -56,10 +56,10 @@
     "title": "Back Office",
     "description": "Aplikasi Back Office — Sistem internal berbasis web yang dikembangkan untuk mendukung pengelolaan data, pengguna, hak akses, serta kebutuhan operasional di lingkungan Badan Standardisasi Nasional (BSN).",
     "longDescription": "Aplikasi Back Office merupakan sistem internal berbasis web yang dikembangkan untuk membantu proses pengelolaan dan administrasi data di lingkungan Badan Standardisasi Nasional (BSN). Sistem ini digunakan untuk mengelola berbagai kebutuhan operasional secara terpusat dengan menerapkan pengaturan role dan hak akses pengguna.",
-    "image": "/uploads/1786361128341-amssmb.png",
+    "image": "/uploads/1786361145332-n718zb.png",
     "gallery": [
+      "/uploads/1786361128341-amssmb.png",
       "/uploads/1786361145323-01ow0g.png",
-      "/uploads/1786361145332-n718zb.png",
       "/uploads/1786361145345-ppgbkq.png",
       "/uploads/1786361145372-6lvorh.png",
       "/uploads/1786361145379-uhn83y.png"

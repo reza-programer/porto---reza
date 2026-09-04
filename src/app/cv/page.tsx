@@ -80,7 +80,16 @@ export default function CVPage() {
             {experiences.map((exp) => (
               <div key={exp.id} className="space-y-1.5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h3 className="font-bold text-slate-900 text-base">{exp.title}</h3>
+                  <div className="flex items-center gap-2.5">
+                    {exp.logo && (
+                      <img
+                        src={exp.logo}
+                        alt={exp.company}
+                        className="w-7 h-7 rounded-md object-contain border border-slate-200 bg-white p-0.5 shrink-0"
+                      />
+                    )}
+                    <h3 className="font-bold text-slate-900 text-base">{exp.title}</h3>
+                  </div>
                   <span className="text-xs font-semibold text-[#5c7254] bg-[#edf1eb] px-2.5 py-0.5 rounded-md w-fit">
                     {exp.period}
                   </span>

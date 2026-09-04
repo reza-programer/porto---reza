@@ -6,8 +6,8 @@ import { Footer } from '@/components/layout/Footer';
 import { getProfile } from '@/lib/data';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { MacbookFrame } from '@/components/ui/MacbookFrame';
-import { FiArrowLeft, FiExternalLink, FiGithub, FiCalendar, FiImage } from 'react-icons/fi';
+import { ProjectDetailHero, ProjectDetailGalleryGrid } from '@/components/ui/ProjectDetailHero';
+import { FiArrowLeft, FiExternalLink, FiGithub, FiCalendar } from 'react-icons/fi';
 
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;
@@ -30,15 +30,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const allImages = [project.image, ...(project.gallery || [])].filter(Boolean);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F5]">
       <Navbar />
 
       <main className="flex-1 pt-28 pb-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Back Button */}
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-600 mb-8 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-[#3B4D35] mb-8 transition-colors"
           >
             <FiArrowLeft className="w-4 h-4" /> Back to Projects
           </Link>
@@ -49,24 +49,25 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full"
+                  className="px-3 py-1 text-xs font-semibold bg-[#EEF3EC] text-[#3B4D35] border border-[#DCE4DB] rounded-full"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1E241C] mb-2 tracking-tight">
               {project.title}
             </h1>
             <p className="text-slate-500 text-sm flex items-center gap-2">
-              <FiCalendar className="w-4 h-4" /> Added on {project.createdAt}
+              <FiCalendar className="w-4 h-4 text-[#5C7254]" /> Added on {project.createdAt}
             </p>
           </div>
 
-          {/* Laptop MacBook Display Gallery Preview */}
-          <div className="mb-12 p-4 sm:p-6 bg-slate-200/60 rounded-3xl border border-slate-300/60 shadow-inner">
-            <MacbookFrame images={allImages} alt={project.title} />
-          </div>
+          {/* Project Screenshot Showcase */}
+          <ProjectDetailHero
+            images={allImages}
+            title={project.title}
+          />
 
           {/* Main Content & Details */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -80,28 +81,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 </div>
               </Card>
 
-              {/* Gallery Thumbnails List */}
-              {allImages.length > 1 && (
-                <Card>
-                  <h3 className="text-lg font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <FiImage className="w-5 h-5 text-blue-600" /> Screenshot Gallery ({allImages.length})
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {allImages.map((imgUrl, idx) => (
-                      <div
-                        key={idx}
-                        className="aspect-16/10 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group"
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={`${project.title} ${idx + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
+              {/* Gallery Grid */}
+              <ProjectDetailGalleryGrid images={allImages} title={project.title} />
             </div>
 
             {/* Sidebar info */}
@@ -157,7 +138,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-md"
+                      className="px-2.5 py-1 text-xs font-medium bg-[#F5F4EF] text-slate-700 rounded-lg border border-[#E2DFD7]"
                     >
                       {tag}
                     </span>
