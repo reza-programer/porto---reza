@@ -1,9 +1,6 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { FiGithub, FiTwitter, FiHeart } from 'react-icons/fi';
-import { FaLinkedin, FaInstagram } from 'react-icons/fa6';
+import { FiArrowUp, FiLock } from 'react-icons/fi';
 import type { Profile } from '@/types';
 
 interface FooterProps {
@@ -11,72 +8,49 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ profile }) => {
+  const socials = [
+    { label: 'GitHub', href: profile.socialLinks.github },
+    { label: 'LinkedIn', href: profile.socialLinks.linkedin },
+    { label: 'Instagram', href: profile.socialLinks.instagram },
+    { label: 'Twitter', href: profile.socialLinks.twitter },
+  ].filter((s) => !!s.href);
+
   return (
-    <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
-          <div>
-            <Link href="#home" className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
-              <span>{profile.name}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5c7254]"></span>
-            </Link>
-            <p className="text-sm text-slate-400 mt-1">{profile.title}</p>
+    <footer className="border-t border-line">
+      <div className="wrap flex flex-col gap-8 py-12 md:flex-row md:items-start md:justify-between">
+        <div>
+          <div className="text-[17px] font-semibold tracking-[-0.03em]">
+            Reza<span className="text-accent">.</span>
           </div>
-
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            {profile.socialLinks.github && (
-              <a
-                href={profile.socialLinks.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all duration-200"
-                aria-label="GitHub"
-              >
-                <FiGithub className="w-5 h-5" />
-              </a>
-            )}
-            {profile.socialLinks.linkedin && (
-              <a
-                href={profile.socialLinks.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-[#0A66C2] hover:bg-white transition-all duration-200"
-                aria-label="LinkedIn"
-              >
-                <FaLinkedin className="w-5 h-5" />
-              </a>
-            )}
-            {profile.socialLinks.twitter && (
-              <a
-                href={profile.socialLinks.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 transition-all duration-200"
-                aria-label="Twitter"
-              >
-                <FiTwitter className="w-5 h-5" />
-              </a>
-            )}
-            {profile.socialLinks.instagram && (
-              <a
-                href={profile.socialLinks.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 hover:text-[#E4405F] hover:bg-white transition-all duration-200"
-                aria-label="Instagram"
-              >
-                <FaInstagram className="w-5 h-5" />
-              </a>
-            )}
-          </div>
+          <p className="t-small mt-1 text-muted">{profile.title}</p>
+          <a href={`mailto:${profile.email}`} className="t-small link-draw mt-3 inline-block text-ink">
+            {profile.email}
+          </a>
         </div>
+        <ul className="t-small flex flex-wrap gap-x-6 gap-y-2">
+          {socials.map((s) => (
+            <li key={s.label}>
+              <a href={s.href} target="_blank" rel="noopener noreferrer" className="link-draw text-ink">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} {profile.name}. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Built with Next.js & Tailwind CSS
-          </p>
+      <div className="wrap">
+        <div className="t-small flex flex-col-reverse items-start justify-between gap-3 border-t border-line py-6 text-muted sm:flex-row sm:items-center">
+          <span>
+            © {new Date().getFullYear()} {profile.name}
+          </span>
+          <span className="flex items-center gap-5">
+            <Link href="/admin/login" aria-label="Admin" className="text-line-strong transition-colors hover:text-ink">
+              <FiLock className="h-3 w-3" />
+            </Link>
+            <a href="#" className="flex items-center gap-1.5 transition-colors hover:text-ink">
+              Back to top <FiArrowUp className="h-3 w-3" />
+            </a>
+          </span>
         </div>
       </div>
     </footer>

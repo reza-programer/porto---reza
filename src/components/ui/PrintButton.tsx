@@ -7,9 +7,9 @@ export const PrintButton: React.FC = () => {
   return (
     <button
       onClick={() => window.print()}
-      className="inline-flex items-center gap-2 px-5 py-2 bg-[#3b4d35] text-white font-bold text-sm rounded-xl shadow-sm hover:bg-[#2d3a28] transition-colors"
+      className="btn btn-primary py-2.5"
     >
-      <FiPrinter className="w-4 h-4" /> Print / Save as PDF
+      <FiPrinter className="h-3.5 w-3.5" /> Print / Save as PDF
     </button>
   );
 };

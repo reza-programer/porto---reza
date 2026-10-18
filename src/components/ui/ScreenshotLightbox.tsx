@@ -2,7 +2,7 @@
 
 import React, { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiX, FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 
 interface ScreenshotLightboxProps {
   images: string[];
@@ -12,26 +12,21 @@ interface ScreenshotLightboxProps {
   title?: string;
 }
 
-export const ScreenshotLightbox: React.FC<ScreenshotLightboxProps> = ({
-  images,
-  initialIndex = 0,
-  isOpen,
-  onClose,
-  title,
-}) => {
+type LightboxPanelProps = Omit<ScreenshotLightboxProps, 'isOpen'>;
+
+/**
+ * Mounted only while open, so the index starts from initialIndex every time
+ * without having to reset state in an effect.
+ */
+const LightboxPanel: React.FC<LightboxPanelProps> = ({ images, initialIndex = 0, onClose, title }) => {
   const [currentIndex, setCurrentIndex] = React.useState(initialIndex);
 
   useEffect(() => {
-    if (isOpen) {
-      setCurrentIndex(initialIndex);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialIndex]);
+  }, []);
 
   const handlePrev = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -42,117 +37,110 @@ export const ScreenshotLightbox: React.FC<ScreenshotLightboxProps> = ({
   }, [images.length]);
 
   useEffect(() => {
-    if (!isOpen) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'ArrowLeft') {
-        handlePrev();
-      } else if (e.key === 'ArrowRight') {
-        handleNext();
-      }
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft') handlePrev();
+      else if (e.key === 'ArrowRight') handleNext();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, handlePrev, handleNext]);
-
-  if (!isOpen || images.length === 0) return null;
+  }, [onClose, handlePrev, handleNext]);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-50 flex flex-col justify-between bg-black/90 backdrop-blur-md p-4 sm:p-6 text-white"
-        onClick={onClose}
-      >
-        {/* Top bar */}
-        <div
-          className="flex items-center justify-between w-full max-w-6xl mx-auto z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex items-center gap-3">
-            {title && <span className="font-semibold text-sm sm:text-base text-slate-200">{title}</span>}
-            {images.length > 1 && (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-white/10 text-slate-300 font-mono">
-                {currentIndex + 1} / {images.length}
-              </span>
-            )}
-          </div>
-
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors"
-            title="Close (Esc)"
-          >
-            <FiX className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Center image container */}
-        <div
-          className="relative flex-1 flex items-center justify-center my-2 sm:my-4 max-w-6xl w-full mx-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-[70] flex flex-col bg-paper/95 backdrop-blur-xl"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title ? `${title} screenshots` : 'Screenshots'}
+    >
+      {/* Top bar */}
+      <div className="wrap flex h-16 shrink-0 items-center justify-between" onClick={(e) => e.stopPropagation()}>
+        <div className="eyebrow flex items-center gap-4">
+          {title && <span className="text-ink">{title}</span>}
           {images.length > 1 && (
+            <span className="tabular-nums">
+              {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+            </span>
+          )}
+        </div>
+        <button
+          onClick={onClose}
+          className="eyebrow -mr-2 flex cursor-pointer items-center gap-2 rounded-full p-2 text-ink"
+          title="Close (Esc)"
+        >
+          Close <FiX className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Image */}
+      <div
+        className="relative flex min-h-0 flex-1 items-center justify-center px-4 sm:px-20"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={images[currentIndex]}
+            src={images[currentIndex]}
+            alt={`${title || 'Screenshot'} - ${currentIndex + 1}`}
+            initial={{ opacity: 0, scale: 0.985 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="max-h-full max-w-full rounded-lg border border-line object-contain shadow-[0_40px_80px_-40px_rgba(0,0,0,0.35)]"
+          />
+        </AnimatePresence>
+
+        {images.length > 1 && (
+          <>
             <button
               onClick={handlePrev}
-              className="absolute left-1 sm:left-4 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 text-white transition-transform hover:scale-105 active:scale-95"
-              title="Previous (Left Arrow)"
+              className="absolute left-2 cursor-pointer rounded-full border border-line bg-surface p-3 text-ink transition-colors hover:border-ink sm:left-6"
+              title="Previous (←)"
             >
-              <FiChevronLeft className="w-5 h-5" />
+              <FiArrowLeft className="h-4 w-4" />
             </button>
-          )}
-
-          <div className="relative max-h-[75vh] w-full flex items-center justify-center">
-            <img
-              src={images[currentIndex]}
-              alt={`${title || 'Screenshot'} - ${currentIndex + 1}`}
-              className="max-h-[75vh] max-w-full object-contain rounded-lg border border-white/10 shadow-2xl transition-all duration-300"
-            />
-          </div>
-
-          {images.length > 1 && (
             <button
               onClick={handleNext}
-              className="absolute right-1 sm:right-4 z-20 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-black/80 border border-white/10 text-white transition-transform hover:scale-105 active:scale-95"
-              title="Next (Right Arrow)"
+              className="absolute right-2 cursor-pointer rounded-full border border-line bg-surface p-3 text-ink transition-colors hover:border-ink sm:right-6"
+              title="Next (→)"
             >
-              <FiChevronRight className="w-5 h-5" />
+              <FiArrowRight className="h-4 w-4" />
             </button>
-          )}
-        </div>
-
-        {/* Bottom thumbnail strip */}
-        {images.length > 1 && (
-          <div
-            className="w-full max-w-4xl mx-auto overflow-x-auto py-2 flex items-center justify-center gap-2 z-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {images.map((img, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`relative shrink-0 w-16 h-10 sm:w-20 sm:h-12 rounded-md overflow-hidden border-2 transition-all ${
-                  idx === currentIndex
-                    ? 'border-[#5c7254] scale-105 opacity-100 shadow-md'
-                    : 'border-transparent opacity-50 hover:opacity-80'
-                }`}
-              >
-                <img
-                  src={img}
-                  alt={`Thumbnail ${idx + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
+          </>
         )}
-      </motion.div>
-    </AnimatePresence>
+      </div>
+
+      {/* Thumbnails */}
+      {images.length > 1 && (
+        <div
+          className="no-scrollbar mx-auto flex w-full max-w-4xl shrink-0 gap-2 overflow-x-auto px-4 py-4 sm:justify-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {images.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`relative h-11 w-[72px] shrink-0 cursor-pointer overflow-hidden rounded-md border transition-all ${
+                idx === currentIndex ? 'border-ink opacity-100' : 'border-line opacity-50 hover:opacity-90'
+              }`}
+            >
+              <img src={img} alt={`Thumbnail ${idx + 1}`} className="h-full w-full object-cover object-top" />
+            </button>
+          ))}
+        </div>
+      )}
+    </motion.div>
   );
 };
+
+export const ScreenshotLightbox: React.FC<ScreenshotLightboxProps> = ({ isOpen, images, ...rest }) => (
+  <AnimatePresence>
+    {isOpen && images.length > 0 && <LightboxPanel key="lightbox" images={images} {...rest} />}
+  </AnimatePresence>
+);

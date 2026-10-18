@@ -1,35 +1,23 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Playfair_Display, Fira_Code } from 'next/font/google';
+import { Geist } from 'next/font/google';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
 
-const sansFont = Plus_Jakarta_Sans({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-sans',
-});
-
-const serifFont = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-serif',
-});
-
-const monoFont = Fira_Code({
-  subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-geist',
 });
 
 export const metadata: Metadata = {
-  title: 'Reza - Portfolio & Developer',
-  description: 'Junior Fullstack Developer & Manual QA Portfolio',
+  title: 'Mohamad Reza Nurpadilah — Fullstack Developer & QA',
+  description:
+    'Portfolio Mohamad Reza Nurpadilah, Junior Fullstack Developer & Manual QA dari Kuningan, Indonesia.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="id"
-      className={`${sansFont.variable} ${serifFont.variable} ${monoFont.variable} scroll-smooth`}
-    >
-      <body className="font-sans min-h-screen bg-slate-50/50 text-slate-900 antialiased selection:bg-red-100 selection:text-red-600">
+    <html lang="id" className={`${geist.variable} scroll-smooth`}>
+      <body className="font-sans min-h-screen bg-paper text-ink antialiased">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

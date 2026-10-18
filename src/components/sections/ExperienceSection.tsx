@@ -1,169 +1,89 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { AnimatedSection } from '@/components/ui/AnimatedSection';
-import { SectionHeading } from '@/components/ui/SectionHeading';
-import { FiBriefcase, FiCalendar, FiMapPin, FiChevronDown, FiChevronUp, FiCheckCircle } from 'react-icons/fi';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { Reveal } from '@/components/ui/Reveal';
+import { formatTags } from '@/lib/project-meta';
 import type { Experience } from '@/types';
 
 interface ExperienceSectionProps {
   experiences: Experience[];
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 25 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number],
-    },
-  },
-};
-
 export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experiences }) => {
-  // Store expanded item IDs for accordion behavior
-  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
-
-  const toggleExpand = (id: string) => {
-    setExpandedIds((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   return (
-    <AnimatedSection id="experience" className="py-20 section-cream mesh-blob-1">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-        <SectionHeading
-          title="Work Experience"
-          subtitle="My professional journey and career milestones."
+    <section id="experience" className="py-20 sm:py-28">
+      <div className="wrap">
+        <SectionHeader
+          index="04"
+          label="Experience"
+          title="Work experience"
+          intro="My professional journey and career milestones."
         />
 
-        {/* Timeline Container with Staggered Entrance */}
-        <div className="relative border-l-2 border-[#dce4db] ml-4 sm:ml-8 space-y-8">
-          {experiences.map((exp, index) => {
-            const isExpanded = !!expandedIds[exp.id];
+        <div className="border-t border-line">
+          {experiences.map((exp, i) => {
+            const isOpen = !!expanded[exp.id];
+            const long = exp.description.length > 160;
+            const isCurrent = /present/i.test(exp.period);
 
             return (
-              <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50, y: 25 }}
-                whileInView={{ opacity: 1, x: 0, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.5, delay: index * 0.2, ease: [0.21, 0.47, 0.32, 0.98] as [number, number, number, number] }}
-                className="relative pl-6 sm:pl-9 group"
-              >
-                {/* Custom Timeline Pin */}
-                <div className="absolute -left-[11px] top-1.5 w-5 h-5 rounded-full bg-white border-2 border-[#5c7254] flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-125 group-hover:bg-[#3b4d35]">
-                  <span className="w-2 h-2 rounded-full bg-[#5c7254] group-hover:bg-white transition-colors" />
-                </div>
+              <Reveal key={exp.id} delay={Math.min(i, 4) * 0.04}>
+                <article className="grid grid-cols-12 gap-x-8 gap-y-4 border-b border-line py-8">
+                  <div className="col-span-12 md:col-span-3">
+                    <div className="t-small font-medium text-ink">{exp.period}</div>
+                    {exp.location && <div className="t-small mt-0.5 text-muted">{exp.location}</div>}
+                    {isCurrent && (
+                      <span className="chip mt-3 border-accent-soft bg-accent-soft text-accent">
+                        <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Current
+                      </span>
+                    )}
+                  </div>
 
-                {/* Main Card */}
-                <div className="bg-white border border-[#dce4db] rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300 hover:border-[#b8c9b3]">
-                  {/* Top Bar: Role & Period */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
-                    <div className="flex items-start sm:items-center gap-3.5">
-                      {exp.logo ? (
-                        <div className="w-12 h-12 rounded-xl border border-[#dce4db] bg-white p-1.5 flex items-center justify-center shrink-0 shadow-xs group-hover:border-[#b8c9b3] transition-colors">
-                          <img
-                            src={exp.logo}
-                            alt={exp.company}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-xl bg-[#edf1eb] border border-[#dce4db] flex items-center justify-center text-[#5c7254] shrink-0">
-                          <FiBriefcase className="w-5 h-5" />
-                        </div>
+                  <div className="col-span-12 md:col-span-9 lg:col-span-6">
+                    <div className="flex items-center gap-4">
+                      {exp.logo && (
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-surface p-1.5">
+                          <img src={exp.logo} alt={exp.company} className="h-full w-full object-contain" />
+                        </span>
                       )}
-                      <div>
-                        <h3 className="text-lg sm:text-xl font-bold text-[#20261e] group-hover:text-[#3b4d35] transition-colors">
-                          {exp.title}
-                        </h3>
-                        <div className="text-sm font-semibold text-[#5c7254] mt-0.5">
-                          {exp.company}
-                        </div>
+                      <div className="min-w-0">
+                        <h3 className="t-h3">{exp.title}</h3>
+                        <div className="t-body text-muted">{exp.company}</div>
                       </div>
                     </div>
 
-                    {/* Period & Location Pills */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 shrink-0">
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#edf1eb] text-[#3b4d35] font-semibold rounded-full border border-[#dce4db]/60">
-                        <FiCalendar className="w-3.5 h-3.5" />
-                        {exp.period}
-                      </span>
-                      {exp.location && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-600 rounded-full">
-                          <FiMapPin className="w-3.5 h-3.5" />
-                          {exp.location}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Skills Tags */}
-                  {exp.skills && exp.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {exp.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-2.5 py-0.5 text-xs font-medium bg-[#edf1eb]/70 text-[#3b4d35] rounded-md border border-[#dce4db]/40 flex items-center gap-1"
-                        >
-                          <FiCheckCircle className="w-3 h-3 text-[#5c7254]" />
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Description Section (Expandable for Compact Height) */}
-                  <div className="relative">
-                    <p
-                      className={`text-slate-600 text-sm leading-relaxed transition-all duration-300 ${
-                        isExpanded ? '' : 'line-clamp-2'
-                      }`}
-                    >
-                      {exp.description}
-                    </p>
-
-                    {/* Toggle Button if description is long */}
-                    {exp.description.length > 140 && (
+                    <p className={`t-body mt-4 text-ink-2 ${long && !isOpen ? 'line-clamp-3' : ''}`}>{exp.description}</p>
+                    {long && (
                       <button
-                        onClick={() => toggleExpand(exp.id)}
-                        className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-[#3b4d35] hover:text-[#2d3a28] hover:underline focus:outline-none transition-colors"
-                        suppressHydrationWarning
+                        onClick={() => setExpanded((p) => ({ ...p, [exp.id]: !p[exp.id] }))}
+                        className="t-small mt-2 inline-flex cursor-pointer items-center gap-1.5 font-medium text-muted transition-colors hover:text-ink"
+                        aria-expanded={isOpen}
                       >
-                        {isExpanded ? (
-                          <>
-                            Tampilkan Lebih Sedikit <FiChevronUp className="w-3.5 h-3.5" />
-                          </>
-                        ) : (
-                          <>
-                            Baca Selengkapnya <FiChevronDown className="w-3.5 h-3.5" />
-                          </>
-                        )}
+                        {isOpen ? <FiMinus className="h-3 w-3" /> : <FiPlus className="h-3 w-3" />}
+                        {isOpen ? 'Show less' : 'Read more'}
                       </button>
                     )}
                   </div>
-                </div>
-              </motion.div>
+
+                  {exp.skills?.length > 0 && (
+                    <ul className="col-span-12 flex flex-wrap content-start gap-1.5 md:col-span-9 md:col-start-4 lg:col-span-3 lg:col-start-auto lg:justify-end">
+                      {formatTags(exp.skills).map((s) => (
+                        <li key={s} className="chip">
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+              </Reveal>
             );
           })}
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   );
 };

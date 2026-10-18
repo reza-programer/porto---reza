@@ -1,13 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
+import { FiArrowLeft } from 'react-icons/fi';
 import { getProfile, getExperience, getCertificates, getProjects } from '@/lib/data';
+import { formatTags, formatTitle } from '@/lib/project-meta';
 import { PrintButton } from '@/components/ui/PrintButton';
-import { FiArrowLeft, FiMail, FiPhone, FiMapPin, FiGlobe, FiCheckCircle } from 'react-icons/fi';
 
 export const metadata = {
-  title: 'Curriculum Vitae - Reza',
-  description: 'Online Resume & Curriculum Vitae of Reza Musthofa',
+  title: 'Curriculum Vitae — Mohamad Reza Nurpadilah',
+  description: 'Online Resume & Curriculum Vitae of Mohamad Reza Nurpadilah',
 };
+
+function Heading({ children }: { children: React.ReactNode }) {
+  return <h2 className="eyebrow col-span-12 text-ink md:col-span-3 print:col-span-3">{children}</h2>;
+}
 
 export default function CVPage() {
   const profile = getProfile();
@@ -15,174 +20,116 @@ export default function CVPage() {
   const certificates = getCertificates();
   const projects = getProjects();
 
-  return (
-    <div className="min-h-screen bg-slate-100 py-8 px-4 sm:px-6 font-sans antialiased text-slate-800">
-      {/* Print & Back Controls (hidden on print) */}
-      <div className="max-w-4xl mx-auto mb-6 flex items-center justify-between print:hidden">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 font-semibold text-sm rounded-xl border border-slate-200 shadow-xs hover:bg-slate-50 transition-colors"
-        >
-          <FiArrowLeft className="w-4 h-4" /> Back to Portfolio
-        </Link>
+  const contacts = [
+    profile.email,
+    profile.phone,
+    profile.location,
+    profile.socialLinks?.github?.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''),
+  ].filter(Boolean) as string[];
 
+  return (
+    <div className="min-h-screen bg-paper px-4 py-6 sm:px-6 sm:py-10 print:bg-white print:p-0">
+      <div className="mx-auto mb-6 flex max-w-4xl items-center justify-between print:hidden">
+        <Link href="/" className="eyebrow group inline-flex items-center gap-2 transition-colors hover:text-ink">
+          <FiArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" /> Back to portfolio
+        </Link>
         <PrintButton />
       </div>
 
-      {/* CV Paper Document */}
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 p-8 sm:p-12 print:shadow-none print:border-none print:p-0">
+      <article className="mx-auto max-w-4xl rounded-2xl border border-line bg-surface p-7 shadow-[0_40px_80px_-50px_rgba(0,0,0,0.25)] sm:p-12 print:max-w-none print:rounded-none print:border-0 print:p-0 print:shadow-none">
         {/* Header */}
-        <div className="border-b border-slate-200 pb-8 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {profile.name}
-            </h1>
-            <p className="text-lg font-semibold text-[#5c7254] mt-1">
-              {profile.title}
-            </p>
-            <p className="text-slate-600 text-sm mt-3 max-w-xl leading-relaxed">
-              {profile.bio}
-            </p>
-          </div>
-
-          {/* Contact Details */}
-          <div className="space-y-2 text-sm text-slate-600 shrink-0 bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <div className="flex items-center gap-2.5">
-              <FiMail className="w-4 h-4 text-[#5c7254]" />
-              <span>{profile.email}</span>
+        <header className="flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-center gap-5">
+            <img
+              src={profile.avatar || '/images/profile.png'}
+              alt={profile.name}
+              className="h-20 w-20 shrink-0 rounded-xl object-cover object-[50%_18%]"
+            />
+            <div>
+              <h1 className="t-h2">{profile.name}</h1>
+              <p className="t-body mt-1 text-muted">{profile.title}</p>
             </div>
-            {profile.phone && (
-              <div className="flex items-center gap-2.5">
-                <FiPhone className="w-4 h-4 text-[#5c7254]" />
-                <span>{profile.phone}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-2.5">
-              <FiMapPin className="w-4 h-4 text-[#5c7254]" />
-              <span>{profile.location}</span>
-            </div>
-            {profile.socialLinks?.github && (
-              <div className="flex items-center gap-2.5">
-                <FiGlobe className="w-4 h-4 text-[#5c7254]" />
-                <span className="truncate max-w-[200px]">{profile.socialLinks.github}</span>
-              </div>
-            )}
           </div>
-        </div>
+          <ul className="t-small space-y-0.5 text-ink-2 sm:text-right">
+            {contacts.map((c) => (
+              <li key={c} className="truncate">
+                {c}
+              </li>
+            ))}
+          </ul>
+        </header>
 
-        {/* Experience Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-slate-900 border-b-2 border-[#5c7254] pb-1.5 mb-4 uppercase tracking-wider text-xs">
-            Work Experience
-          </h2>
+        <p className="t-body border-b border-line py-6 text-ink-2">{profile.bio}</p>
 
-          <div className="space-y-6">
+        {/* Experience */}
+        <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <Heading>Experience</Heading>
+          <div className="col-span-12 space-y-7 md:col-span-9 print:col-span-9">
             {experiences.map((exp) => (
-              <div key={exp.id} className="space-y-1.5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <div className="flex items-center gap-2.5">
-                    {exp.logo && (
-                      <img
-                        src={exp.logo}
-                        alt={exp.company}
-                        className="w-7 h-7 rounded-md object-contain border border-slate-200 bg-white p-0.5 shrink-0"
-                      />
-                    )}
-                    <h3 className="font-bold text-slate-900 text-base">{exp.title}</h3>
-                  </div>
-                  <span className="text-xs font-semibold text-[#5c7254] bg-[#edf1eb] px-2.5 py-0.5 rounded-md w-fit">
-                    {exp.period}
-                  </span>
+              <div key={exp.id} className="break-inside-avoid">
+                <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
+                  <h3 className="t-h3">{exp.title}</h3>
+                  <span className="t-small text-muted">{exp.period}</span>
                 </div>
-                <div className="text-sm font-semibold text-slate-700">
-                  {exp.company} {exp.location ? `• ${exp.location}` : ''}
+                <div className="t-small text-ink-2">
+                  {exp.company}
+                  {exp.location ? ` · ${exp.location}` : ''}
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  {exp.description}
-                </p>
-                {exp.skills && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {exp.skills.map((s) => (
-                      <span key={s} className="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+                <p className="t-small mt-2 text-muted">{exp.description}</p>
+                {exp.skills?.length > 0 && (
+                  <p className="t-small mt-2 text-ink-2">{formatTags(exp.skills).join(' · ')}</p>
                 )}
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Featured Projects */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-slate-900 border-b-2 border-[#5c7254] pb-1.5 mb-4 uppercase tracking-wider text-xs">
-            Key Projects
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Projects */}
+        <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <Heading>Key projects</Heading>
+          <div className="col-span-12 grid gap-x-6 gap-y-5 sm:grid-cols-2 md:col-span-9 print:col-span-9 print:grid-cols-2">
             {projects.slice(0, 4).map((p) => (
-              <div key={p.id} className="p-3.5 border border-slate-200 rounded-xl bg-slate-50/60">
-                <h3 className="font-bold text-slate-900 text-sm mb-1">{p.title}</h3>
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-2">
-                  {p.description}
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {p.tags.map((t) => (
-                    <span key={t} className="text-[10px] bg-white border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded">
-                      {t}
-                    </span>
-                  ))}
-                </div>
+              <div key={p.id} className="break-inside-avoid">
+                <h3 className="t-body font-semibold">{p.title.trim()}</h3>
+                <p className="t-small mt-1 line-clamp-2 text-muted">{p.description.replace(/\s+/g, ' ').trim()}</p>
+                <p className="t-small mt-1 text-ink-2">{formatTags(p.tags).join(' · ')}</p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Technical Skills */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold text-slate-900 border-b-2 border-[#5c7254] pb-1.5 mb-4 uppercase tracking-wider text-xs">
-            Technical Skills &amp; Tools
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Skills */}
+        <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <Heading>Skills &amp; tools</Heading>
+          <div className="col-span-12 grid gap-6 sm:grid-cols-3 md:col-span-9 print:col-span-9 print:grid-cols-3">
             {profile.skills?.map((cat) => (
-              <div key={cat.category} className="space-y-1.5">
-                <h3 className="font-semibold text-slate-800 text-xs uppercase tracking-wider">
-                  {cat.category}
-                </h3>
-                <ul className="space-y-1 text-sm text-slate-600">
+              <div key={cat.category}>
+                <h3 className="t-small font-semibold text-ink">{cat.category}</h3>
+                <ul className="t-small mt-2 space-y-1 text-muted">
                   {cat.skills.map((s) => (
-                    <li key={s.name} className="flex items-center gap-1.5">
-                      <FiCheckCircle className="w-3.5 h-3.5 text-[#5c7254] shrink-0" />
-                      <span>{s.name}</span>
-                    </li>
+                    <li key={s.name}>{s.name}</li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Certificates */}
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 border-b-2 border-[#5c7254] pb-1.5 mb-4 uppercase tracking-wider text-xs">
-            Certifications
-          </h2>
-
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-700">
+        <section className="grid grid-cols-12 gap-x-6 gap-y-4 pt-8">
+          <Heading>Certifications</Heading>
+          <ul className="col-span-12 grid gap-x-6 gap-y-3 sm:grid-cols-2 md:col-span-9 print:col-span-9 print:grid-cols-2">
             {certificates.map((cert) => (
-              <li key={cert.id} className="flex items-start gap-2">
-                <span className="text-[#5c7254] font-bold">•</span>
-                <div>
-                  <span className="font-semibold text-slate-900">{cert.title}</span>
-                  <div className="text-xs text-slate-500">{cert.issuer} ({cert.date})</div>
+              <li key={cert.id} className="break-inside-avoid">
+                <div className="t-small font-semibold text-ink">{formatTitle(cert.title)}</div>
+                <div className="t-small text-muted">
+                  {cert.issuer} · {cert.date}
                 </div>
               </li>
             ))}
           </ul>
-        </div>
-      </div>
+        </section>
+      </article>
     </div>
   );
 }

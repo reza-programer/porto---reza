@@ -17,27 +17,25 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles =
+    'inline-flex cursor-pointer items-center justify-center rounded-full font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50';
 
   const variants = {
-    primary: 'bg-[#3b4d35] hover:bg-[#283624] text-white shadow-xs hover:shadow focus:ring-[#5c7254]',
-    secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-800 focus:ring-slate-400',
-    outline: 'border border-slate-300 hover:border-slate-400 hover:bg-slate-50 text-slate-700 focus:ring-slate-400',
-    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm focus:ring-red-500',
-    ghost: 'hover:bg-slate-100 text-slate-700 focus:ring-slate-400',
+    primary: 'bg-ink text-paper hover:bg-ink-2',
+    secondary: 'bg-paper text-ink border border-line hover:border-ink',
+    outline: 'border border-line-strong text-ink hover:border-ink',
+    danger: 'bg-red-600 text-white hover:bg-red-700',
+    ghost: 'text-ink-2 hover:bg-paper hover:text-ink',
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-xs font-medium gap-1.5',
-    md: 'px-4 py-2 text-sm gap-2',
-    lg: 'px-6 py-3 text-base gap-2.5',
+    sm: 'px-3.5 py-1.5 text-xs gap-1.5',
+    md: 'px-4.5 py-2 text-sm gap-2',
+    lg: 'px-6 py-3 text-[15px] gap-2.5',
   };
 
   return (
-    <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    >
+    <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
       {icon && <span className="shrink-0">{icon}</span>}
       {children}
     </button>

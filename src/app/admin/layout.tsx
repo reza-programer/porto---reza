@@ -4,21 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import {
-  FiGrid,
-  FiFolder,
-  FiBriefcase,
-  FiAward,
-  FiLogOut,
-  FiGlobe,
-  FiUser,
-} from 'react-icons/fi';
+import { FiGrid, FiFolder, FiBriefcase, FiAward, FiLogOut, FiArrowUpRight } from 'react-icons/fi';
 
 const sidebarNavItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: FiGrid },
-  { name: 'Manage Projects', href: '/admin/projects', icon: FiFolder },
-  { name: 'Manage Experience', href: '/admin/experience', icon: FiBriefcase },
-  { name: 'Manage Certificates', href: '/admin/certificates', icon: FiAward },
+  { name: 'Projects', href: '/admin/projects', icon: FiFolder },
+  { name: 'Experience', href: '/admin/experience', icon: FiBriefcase },
+  { name: 'Certificates', href: '/admin/certificates', icon: FiAward },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -27,28 +19,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // If viewing login page, don't show admin sidebar/layout
   if (pathname === '/admin/login') {
-    return <>{children}</>;
+    return <div className="admin-theme">{children}</div>;
   }
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <div className="text-slate-500 font-medium">Loading session...</div>
+      <div className="flex min-h-screen items-center justify-center bg-paper">
+        <span className="eyebrow animate-pulse">Loading session…</span>
       </div>
     );
   }
 
   if (status === 'unauthenticated') {
     return (
-      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-200 text-center max-w-sm">
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Access Denied</h2>
-          <p className="text-sm text-slate-600 mb-6">Please log in to access the admin panel.</p>
+      <div className="flex min-h-screen items-center justify-center bg-paper p-4">
+        <div className="w-full max-w-sm border-t border-ink pt-6">
+          <div className="eyebrow">401</div>
+          <h2 className="mt-3 text-3xl font-medium tracking-[-0.03em]">Access denied</h2>
+          <p className="mt-2 text-[15px] text-muted">Please log in to access the admin panel.</p>
           <Link
             href="/admin/login"
-            className="inline-block px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-ink-2"
           >
-            Go to Login
+            Go to login
           </Link>
         </div>
       </div>
@@ -56,22 +49,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
-        {/* Header / Brand */}
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-            <span className="font-bold text-white tracking-tight">Admin Panel</span>
-          </div>
-          <span className="text-[10px] uppercase font-bold tracking-wider bg-slate-800 px-2 py-0.5 rounded text-blue-400">
-            v1.0
+    <div className="admin-theme flex min-h-screen bg-paper">
+      <aside className="flex w-64 shrink-0 flex-col border-r border-line bg-surface">
+        <div className="flex h-16 items-center justify-between border-b border-line px-6">
+          <span className="text-[17px] font-semibold tracking-[-0.03em]">
+            Reza<span className="text-accent">.</span>
           </span>
+          <span className="eyebrow">Admin</span>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 space-y-0.5 p-3">
           {sidebarNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -79,48 +66,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                  isActive ? 'bg-ink text-paper' : 'text-muted hover:bg-paper hover:text-ink'
                 }`}
               >
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon className="h-4 w-4 shrink-0" />
                 {item.name}
               </Link>
             );
           })}
         </nav>
 
-        {/* User Info & Actions */}
-        <div className="p-4 border-t border-slate-800 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2 text-xs text-slate-400">
-            <FiUser className="w-4 h-4 text-slate-400" />
-            <span className="truncate">{session?.user?.email || 'admin@portfolio.com'}</span>
-          </div>
-
+        <div className="space-y-1 border-t border-line p-3">
+          <div className="eyebrow truncate px-3 py-2">{session?.user?.email || session?.user?.name || 'admin'}</div>
           <Link
             href="/"
             target="_blank"
-            className="flex items-center gap-3 px-3.5 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-paper hover:text-ink"
           >
-            <FiGlobe className="w-4 h-4 shrink-0 text-blue-400" />
-            View Live Site
+            <FiArrowUpRight className="h-4 w-4 shrink-0" />
+            View live site
           </Link>
-
           <button
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            className="w-full flex items-center gap-3 px-3.5 py-2 rounded-lg text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-950/40 transition-colors"
+            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
           >
-            <FiLogOut className="w-4 h-4 shrink-0" />
-            Sign Out
+            <FiLogOut className="h-4 w-4 shrink-0" />
+            Sign out
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 p-8 overflow-y-auto max-h-screen">
-        <div className="max-w-6xl mx-auto">{children}</div>
+      <main className="max-h-screen flex-1 overflow-y-auto p-8">
+        <div className="mx-auto max-w-6xl">{children}</div>
       </main>
     </div>
   );

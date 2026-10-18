@@ -1,137 +1,77 @@
-'use client';
-
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import React from 'react';
 
 interface MacbookFrameProps {
-  images: string[];
-  alt?: string;
+  src: string;
+  alt: string;
+  label?: string;
+  eager?: boolean;
   className?: string;
-  projectId?: string;
 }
 
-export const MacbookFrame: React.FC<MacbookFrameProps> = ({
-  images,
-  alt = 'Project Screenshot',
-  className = '',
-  projectId,
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const DOCK_ICONS = ['#3a3a3a', '#6b6b6b', '#9a9a9a', '#cfcfcf', '#5a5a5a'];
 
-  const validImages = images && images.length > 0 ? images : ['/images/projects/project1.svg'];
+/**
+ * A CSS laptop mockup. The 16:10 screen shows a minimal desktop with a browser
+ * window; the screenshot sits in that window at its own ~2.08:1 aspect with
+ * object-contain, so it is never cropped. Every size inside uses container
+ * units (cqw) so the whole device scales with its column.
+ */
+export const MacbookFrame: React.FC<MacbookFrameProps> = ({ src, alt, label, eager = false, className = '' }) => {
+  return (
+    <div className={`@container relative w-full select-none ${className}`}>
+      {/* Lid */}
+      <div className="relative mx-auto w-[88cqw] rounded-t-[2.4cqw] bg-[#111] p-[1.5cqw] pb-[1.1cqw] shadow-[0_0_0_0.3cqw_#cfd0d2,0_0_0_0.36cqw_#a9abae]">
+        <span className="absolute left-1/2 top-[0.5cqw] h-[0.55cqw] w-[0.55cqw] -translate-x-1/2 rounded-full bg-[#2b2b2b]" />
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
-  };
-
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentIndex((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
-  };
-
-  const ImageDisplay = (
-    <div className="relative bg-slate-950 rounded-sm overflow-hidden group cursor-pointer">
-      {/* Stacked images with crossfade */}
-      <div className="relative w-full">
-        {validImages.map((src, idx) => (
-          <img
-            key={src}
-            src={src}
-            alt={`${alt} ${idx + 1}`}
-            className={`w-full h-auto block transition-opacity duration-700 ease-in-out ${
-              idx === currentIndex
-                ? 'relative opacity-100'
-                : 'absolute inset-0 opacity-0 pointer-events-none'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Navigation Arrows for Multi-image Gallery */}
-      {validImages.length > 1 && (
-        <>
-          <button
-            onClick={prevImage}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-slate-900/80 backdrop-blur-md text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-slate-900 transition-all shadow-md z-20"
-            title="Previous image"
-          >
-            <FiChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={nextImage}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-slate-900/80 backdrop-blur-md text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-slate-900 transition-all shadow-md z-20"
-            title="Next image"
-          >
-            <FiChevronRight className="w-4 h-4" />
-          </button>
-
-          {/* Progress bar */}
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-800/50 z-20">
-            <div
-              className="h-full bg-[#5c7254] transition-all duration-500 ease-out"
-              style={{ width: `${((currentIndex + 1) / validImages.length) * 100}%` }}
-            />
+        {/* Screen */}
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[0.5cqw] bg-[radial-gradient(130%_90%_at_50%_0%,#f5f5f4_0%,#e2e2df_55%,#cfcfcb_100%)]">
+          {/* Menu bar */}
+          <div className="absolute inset-x-0 top-0 flex h-[1.7cqw] items-center gap-[1.1cqw] bg-white/70 px-[1.4cqw]">
+            <span className="h-[0.75cqw] w-[0.75cqw] rounded-full bg-ink" />
+            <span className="h-[0.45cqw] w-[3.2cqw] rounded-full bg-ink/40" />
+            <span className="h-[0.45cqw] w-[2.4cqw] rounded-full bg-ink/25" />
+            <span className="h-[0.45cqw] w-[2.8cqw] rounded-full bg-ink/25" />
+            <span className="ml-auto h-[0.45cqw] w-[4cqw] rounded-full bg-ink/25" />
           </div>
 
-          {/* Dots Indicator */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 bg-slate-900/70 backdrop-blur-md rounded-full z-20">
-            {validImages.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setCurrentIndex(idx);
-                }}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  idx === currentIndex ? 'w-5 bg-[#5c7254]' : 'w-1.5 bg-slate-400/60 hover:bg-slate-300'
-                }`}
-              />
+          {/* Browser window */}
+          <div className="absolute left-[2.6cqw] right-[2.6cqw] top-[3cqw] overflow-hidden rounded-[0.7cqw] bg-white shadow-[0_1.2cqw_2.4cqw_-0.6cqw_rgba(0,0,0,0.28),0_0_0_0.08cqw_rgba(0,0,0,0.08)]">
+            <div className="flex h-[2.6cqw] items-center gap-[0.55cqw] border-b border-black/[0.06] bg-[#f6f6f5] px-[1.1cqw]">
+              <span className="h-[0.7cqw] w-[0.7cqw] rounded-full bg-[#d0d0cd]" />
+              <span className="h-[0.7cqw] w-[0.7cqw] rounded-full bg-[#d0d0cd]" />
+              <span className="h-[0.7cqw] w-[0.7cqw] rounded-full bg-[#d0d0cd]" />
+              <span className="mx-auto flex h-[1.5cqw] w-[38%] items-center justify-center truncate rounded-[0.45cqw] bg-white px-[1cqw] text-[0.95cqw] leading-none text-faint shadow-[0_0_0_0.08cqw_rgba(0,0,0,0.07)]">
+                {label}
+              </span>
+              <span className="w-[2.9cqw]" />
+            </div>
+            <div className="aspect-[1920/920] bg-white">
+              <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} draggable={false} className="h-full w-full object-contain" />
+            </div>
+          </div>
+
+          {/* Dock */}
+          <div className="absolute bottom-[1.3cqw] left-1/2 flex -translate-x-1/2 items-center gap-[0.6cqw] rounded-[1.1cqw] border border-white/70 bg-white/45 p-[0.6cqw] shadow-[0_0.4cqw_1.2cqw_rgba(0,0,0,0.12)] backdrop-blur-sm">
+            {DOCK_ICONS.map((c, i) => (
+              <span key={i} className="h-[2.6cqw] w-[2.6cqw] rounded-[0.7cqw]" style={{ background: c }} />
             ))}
           </div>
-        </>
-      )}
-    </div>
-  );
 
-  return (
-    <div
-      className={`relative w-full max-w-4xl mx-auto ${className}`}
-    >
-      {/* MacBook Screen Bezel */}
-      <div className="relative bg-slate-900 rounded-t-[1.2rem] p-2.5 sm:p-3 shadow-2xl border border-slate-800 border-b-0">
-        {/* Top Bar with traffic lights */}
-        <div className="flex items-center gap-1.5 mb-2 px-1">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-
-          {/* Counter Tag */}
-          {validImages.length > 1 && (
-            <div className="ml-auto px-2.5 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-mono rounded-md border border-slate-700/60">
-              {currentIndex + 1} / {validImages.length}
-            </div>
-          )}
+          {/* Glass reflection */}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0)_38%)]" />
         </div>
-
-        {/* Screen Display — Clickable to project detail page if projectId provided */}
-        {projectId ? (
-          <Link href={`/projects/${projectId}`} className="block">
-            {ImageDisplay}
-          </Link>
-        ) : (
-          ImageDisplay
-        )}
       </div>
 
-      {/* MacBook Bottom Base / Lip */}
-      <div className="relative mx-auto w-[106%] -ml-[3%] h-3 sm:h-4 bg-gradient-to-b from-slate-300 via-slate-400 to-slate-500 rounded-b-xl shadow-lg flex justify-center border-t border-slate-300">
-        <div className="w-16 sm:w-24 h-1 sm:h-1.5 bg-slate-500/60 rounded-b-md" />
+      {/* Hinge */}
+      <div className="mx-auto h-[0.55cqw] w-[88cqw] bg-[linear-gradient(to_bottom,#2a2a2a,#5b5c5e)]" />
+
+      {/* Base */}
+      <div className="relative mx-auto h-[2.3cqw] w-full rounded-b-[1.6cqw] rounded-t-[0.25cqw] bg-[linear-gradient(to_bottom,#eceded_0%,#cfd1d3_45%,#a8aaad_100%)] shadow-[inset_0_0.12cqw_0_rgba(255,255,255,0.8)]">
+        <span className="absolute left-1/2 top-0 h-[0.85cqw] w-[15cqw] -translate-x-1/2 rounded-b-[0.9cqw] bg-[linear-gradient(to_bottom,#b4b6b9,#d6d8da)]" />
       </div>
+
+      {/* Contact shadow */}
+      <div aria-hidden className="pointer-events-none mx-auto -mt-[0.6cqw] h-[2.4cqw] w-[84cqw] rounded-[50%] bg-black/25 blur-[1.4cqw]" />
     </div>
   );
 };

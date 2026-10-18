@@ -9,17 +9,12 @@ interface CardProps {
   onClick?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({
-  children,
-  className = '',
-  hoverEffect = true,
-  onClick,
-}) => {
+export const Card: React.FC<CardProps> = ({ children, className = '', hoverEffect = true, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl border border-slate-200 shadow-xs p-6 ${
-        hoverEffect ? 'hover:shadow-md hover:border-slate-300 transition-all duration-300' : ''
+      className={`rounded-2xl border border-line bg-surface p-6 ${
+        hoverEffect ? 'transition-colors duration-300 hover:border-line-strong' : ''
       } ${onClick ? 'cursor-pointer' : ''} ${className}`}
     >
       {children}

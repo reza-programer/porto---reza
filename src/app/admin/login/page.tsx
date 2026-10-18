@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { FiLock, FiUser, FiArrowLeft, FiEye, FiEyeOff, FiShield } from 'react-icons/fi';
-import Link from 'next/link';
+import { FiArrowLeft, FiArrowRight, FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -38,88 +36,73 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf9f5] flex items-center justify-center p-4 selection:bg-[#edf1eb]">
-      <div className="w-full max-w-md">
-        {/* Back Link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-[#5c7254] hover:text-[#3b4d35] mb-6 transition-colors"
-        >
-          <FiArrowLeft className="w-4 h-4" /> Kembali ke Portofolio
+    <div className="flex min-h-screen flex-col bg-paper">
+      <div className="wrap flex h-16 items-center justify-between">
+        <Link href="/" className="text-[17px] font-semibold tracking-[-0.03em]">
+          Reza<span className="text-accent">.</span>
         </Link>
+        <Link href="/" className="eyebrow group inline-flex items-center gap-2 transition-colors hover:text-ink">
+          <FiArrowLeft className="h-3.5 w-3.5" /> Kembali ke portofolio
+        </Link>
+      </div>
 
-        {/* Login Card */}
-        <Card className="shadow-lg border-[#dce4db] bg-white p-8 rounded-3xl">
-          <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-[#edf1eb] border border-[#dce4db] text-[#3b4d35] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xs">
-              <FiShield className="w-7 h-7 text-[#5c7254]" />
-            </div>
-            <h1 className="text-2xl font-extrabold text-[#20261e] tracking-tight">Admin Portal</h1>
-            <p className="text-xs font-medium text-slate-500 mt-1">
-              Masuk untuk mengelola proyek, pengalaman, dan sertifikat
-            </p>
-          </div>
+      <div className="flex flex-1 items-center justify-center px-5 pb-16">
+        <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-7 sm:p-8">
+          <div className="eyebrow">Admin portal</div>
+          <h1 className="t-h2 mt-3">Masuk ke admin</h1>
+          <p className="t-body mt-2 text-muted">Masuk untuk mengelola proyek, pengalaman, dan sertifikat.</p>
 
           {error && (
-            <div className="mb-6 p-3.5 bg-red-50 text-red-700 text-xs rounded-xl border border-red-100 font-semibold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-              {error}
-            </div>
+            <div className="t-small mt-6 border-l-2 border-red-600 bg-red-50 px-4 py-3 text-red-700">{error}</div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Username
-              </label>
-              <div className="relative">
-                <FiUser className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4" />
-                <input
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Masukkan username"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#dce4db] bg-slate-50/50 focus:ring-2 focus:ring-[#5c7254] focus:border-[#5c7254] outline-none text-slate-900 text-sm transition-all font-medium"
-                />
-              </div>
-            </div>
+          <form onSubmit={handleLogin} className="mt-8 space-y-6">
+            <label className="block">
+              <span className="eyebrow">Username</span>
+              <input
+                type="text"
+                required
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Masukkan username"
+                className="field"
+              />
+            </label>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <FiLock className="absolute left-3.5 top-3.5 text-slate-400 w-4 h-4" />
+            <label className="block">
+              <span className="eyebrow">Password</span>
+              <span className="relative block">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-11 py-3 rounded-xl border border-[#dce4db] bg-slate-50/50 focus:ring-2 focus:ring-[#5c7254] focus:border-[#5c7254] outline-none text-slate-900 text-sm transition-all font-medium"
+                  className="field pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer p-2 text-faint transition-colors hover:text-ink"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
+                  {showPassword ? <FiEyeOff className="h-4 w-4" /> : <FiEye className="h-4 w-4" />}
                 </button>
-              </div>
-            </div>
+              </span>
+            </label>
 
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              size="lg"
               disabled={loading}
-              className="w-full mt-3 bg-[#3b4d35] hover:bg-[#2d3a28] py-3 text-sm font-bold shadow-xs rounded-xl transition-all"
+              className="btn btn-primary group w-full justify-between disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Memproses...' : 'Masuk ke Admin'}
-            </Button>
+              <FiArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </button>
           </form>
-        </Card>
+        </div>
       </div>
     </div>
   );

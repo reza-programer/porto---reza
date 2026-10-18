@@ -18,14 +18,14 @@ export default function Home() {
   const certificates = getCertificates();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-700">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
 
       <main className="flex-1">
         <HeroSection profile={profile} />
         <ProjectsSection projects={projects} />
         <AboutSection profile={profile} />
-        <SkillsSection />
+        <SkillsSection profile={profile} />
         <ExperienceSection experiences={experiences} />
         <CertificatesSection certificates={certificates} />
         <ContactSection profile={profile} />
