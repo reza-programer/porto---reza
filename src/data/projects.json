@@ -59,7 +59,6 @@
     "image": "/uploads/1786361145332-n718zb.png",
     "gallery": [
       "/uploads/1786361128341-amssmb.png",
-      "/uploads/1786361145323-01ow0g.png",
       "/uploads/1786361145345-ppgbkq.png",
       "/uploads/1786361145372-6lvorh.png",
       "/uploads/1786361145379-uhn83y.png"
@@ -75,30 +74,6 @@
     "githubUrl": "",
     "featured": true,
     "createdAt": "2024-01-10"
-  },
-  {
-    "id": "msn5v16ygvebi9gud3l",
-    "title": "SIMTAH ",
-    "description": "SIMTAH  — Sistem Informasi Pertanahan Kabupaten Kuningan\nAplikasi berbasis web yang dikembangkan untuk mendukung pengelolaan, penyajian, dan pemantauan informasi pertanahan di Kabupaten Kuningan secara terintegrasi.",
-    "longDescription": "SIMTAH Kuningan merupakan sistem informasi berbasis web yang dikembangkan untuk mendukung pengelolaan informasi pertanahan di Kabupaten Kuningan. Sistem ini membantu proses pengelolaan dan penyajian data pertanahan secara terstruktur sehingga informasi dapat diakses dan dikelola dengan lebih efektif.\n\nDalam pengembangan project ini, saya terlibat sebagai Frontend Developer dengan menggunakan Vue.js dan Tailwind CSS. Fokus pekerjaan meliputi pengembangan dan penyesuaian antarmuka pengguna, implementasi komponen halaman, pengolahan tampilan data, serta memastikan tampilan aplikasi responsif pada berbagai perangkat.",
-    "image": "/uploads/1786361979494-p7n1mm.png",
-    "tags": [
-      "Vue.Js",
-      "Tailwind Css"
-    ],
-    "liveUrl": "",
-    "githubUrl": "",
-    "featured": true,
-    "createdAt": "2026-08-10",
-    "gallery": [
-      "/uploads/1786362223838-s7ilyg.png",
-      "/uploads/1786362223871-kjxkf2.png",
-      "/uploads/1786362223944-onw6fu.png",
-      "/uploads/1786362223898-urhggw.png",
-      "/uploads/1786362223961-5iu0pe.png",
-      "/uploads/1786362224000-wk02fo.png",
-      "/uploads/1786362224018-7whzut.png"
-    ]
   },
   {
     "id": "msnuo961z3pvff3swxe",

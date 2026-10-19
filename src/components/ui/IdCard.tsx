@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { PhotoCycle } from '@/components/ui/PhotoCycle';
 import type { Profile } from '@/types';
 
 /*
@@ -181,6 +182,9 @@ export const IdCard: React.FC<{ profile: Profile }> = ({ profile }) => {
 
   const handle = profile.socialLinks.github?.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '');
   const bars = barcode(profile.email);
+  const photos = [profile.avatar || '/images/profile.png', ...(profile.avatarAlts ?? [])];
+  // The formal portrait is framed tighter than the edited ones.
+  const photoPositions = photos.map((_, i) => (i === 0 ? '50% 15%' : '50% 20%'));
 
   const face =
     'absolute inset-0 flex flex-col overflow-hidden rounded-[22px] border border-line bg-surface [backface-visibility:hidden] shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_30px_60px_-30px_rgba(10,10,10,0.35),0_12px_24px_-12px_rgba(10,10,10,0.18)]';
@@ -243,13 +247,8 @@ export const IdCard: React.FC<{ profile: Profile }> = ({ profile }) => {
                   <span className="eyebrow text-[10px]">Portfolio ID</span>
                 </div>
 
-                <div className="mx-5 mt-3.5 aspect-[4/5] overflow-hidden rounded-xl bg-[#cfd4dc]">
-                  <img
-                    src={profile.avatar || '/images/profile.png'}
-                    alt={profile.name}
-                    draggable={false}
-                    className="h-full w-full object-cover object-[50%_15%]"
-                  />
+                <div className="relative mx-5 mt-3.5 aspect-[4/5] overflow-hidden rounded-xl bg-[#cfd4dc] [container-type:size]">
+                  <PhotoCycle photos={photos} positions={photoPositions} alt={profile.name} />
                 </div>
 
                 <div className="mt-auto px-5 pb-6">

@@ -9,6 +9,8 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
+  /** Rendered in a fixed bar under the scrollable body (e.g. form buttons). */
+  footer?: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 }
 
@@ -21,7 +23,7 @@ const maxWidthClasses = {
   '3xl': 'max-w-3xl',
 };
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = 'md' }) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer, maxWidth = 'md' }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -59,7 +61,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
             className={`relative z-10 my-6 w-full ${maxWidthClasses[maxWidth]} overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_40px_80px_-30px_rgba(0,0,0,0.35)]`}
           >
             <div className="flex items-center justify-between border-b border-line px-6 py-4">
-              <h3 className="eyebrow text-ink">{title || ''}</h3>
+              <h3 className="t-h3">{title || ''}</h3>
               <button
                 onClick={onClose}
                 aria-label="Close"
@@ -69,7 +71,13 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
               </button>
             </div>
 
-            <div className="max-h-[calc(100vh-10rem)] overflow-y-auto px-6 py-5">{children}</div>
+            <div className={`${footer ? 'max-h-[calc(100vh-14rem)]' : 'max-h-[calc(100vh-10rem)]'} overflow-y-auto px-6 py-5`}>
+              {children}
+            </div>
+
+            {footer && (
+              <div className="flex items-center justify-end gap-2 border-t border-line bg-paper/70 px-6 py-4">{footer}</div>
+            )}
           </motion.div>
         </div>
       )}

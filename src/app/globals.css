@@ -154,6 +154,59 @@ body {
     border-color: var(--color-ink);
   }
 
+  .btn-ghost {
+    color: var(--color-ink-2);
+  }
+  .btn-ghost:hover {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  /* Square icon-only button (edit / delete / reorder) */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    color: var(--color-muted);
+    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+  }
+  .icon-btn:hover {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .icon-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Boxed input for dense forms (admin) */
+  .input {
+    width: 100%;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 0.625rem;
+    background: var(--color-surface);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input::placeholder {
+    color: var(--color-faint);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
+  }
+  textarea.input {
+    resize: vertical;
+  }
+
   /* Underline that draws in from the left on hover */
   .link-draw {
     background-image: linear-gradient(currentColor, currentColor);

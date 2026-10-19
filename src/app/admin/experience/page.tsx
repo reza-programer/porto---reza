@@ -1,137 +1,70 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import React, { useState } from 'react';
+import { FiBriefcase, FiChevronDown, FiChevronUp, FiEdit2, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { Modal } from '@/components/ui/Modal';
-import {
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiBriefcase,
-  FiCalendar,
-  FiMapPin,
-  FiUploadCloud,
-  FiX,
-  FiCheck,
-  FiChevronUp,
-  FiChevronDown,
-} from 'react-icons/fi';
+import { Field, FormSection, ImageField, ListShell, PageHeader, useCollection, useUpload } from '@/components/admin/AdminUI';
+import { formatTags } from '@/lib/project-meta';
 import type { Experience } from '@/types';
 
-export default function AdminExperiencePage() {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
+const emptyForm = {
+  title: '',
+  company: '',
+  logo: '',
+  location: '',
+  period: '',
+  description: '',
+  skills: '',
+};
 
-  // Modal State
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
-
-  // Form State
-  const [formData, setFormData] = useState({
-    title: '',
-    company: '',
-    logo: '',
-    location: '',
-    period: '',
-    description: '',
-    skills: '',
+const putExperience = (exp: Experience) =>
+  fetch('/api/experience', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(exp),
   });
 
-  const fetchExperience = async () => {
-    try {
-      const res = await fetch('/api/experience');
-      const data = await res.json();
-      setExperiences(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function AdminExperiencePage() {
+  const { items: experiences, setItems: setExperiences, loading, reload } = useCollection<Experience>('/api/experience');
+  const { uploading, upload } = useUpload();
 
-  useEffect(() => {
-    fetchExperience();
-  }, []);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState<Experience | null>(null);
+  const [form, setForm] = useState(emptyForm);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const set = <K extends keyof typeof emptyForm>(key: K, value: (typeof emptyForm)[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleMove = async (index: number, direction: 'up' | 'down') => {
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= experiences.length) return;
+    const target = direction === 'up' ? index - 1 : index + 1;
+    if (target < 0 || target >= experiences.length) return;
 
-    const currentExp = experiences[index];
-    const targetExp = experiences[targetIndex];
+    const current = experiences[index];
+    const other = experiences[target];
 
-    const currentOrder = currentExp.order;
-    const targetOrder = targetExp.order;
-
-    // Optimistically update
+    // Swap order values optimistically, then persist both.
     const updated = [...experiences];
-    updated[index] = { ...currentExp, order: targetOrder };
-    updated[targetIndex] = { ...targetExp, order: currentOrder };
+    updated[index] = { ...current, order: other.order };
+    updated[target] = { ...other, order: current.order };
     updated.sort((a, b) => a.order - b.order);
     setExperiences(updated);
 
-    // Persist
-    await Promise.all([
-      fetch('/api/experience', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...currentExp, order: targetOrder }),
-      }),
-      fetch('/api/experience', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...targetExp, order: currentOrder }),
-      }),
-    ]);
-
-    fetchExperience();
+    await Promise.all([putExperience({ ...current, order: other.order }), putExperience({ ...other, order: current.order })]);
+    reload();
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const body = new FormData();
-    body.append('file', file);
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body,
-      });
-
-      if (!res.ok) throw new Error('Upload failed');
-      const result = await res.json();
-
-      setFormData((prev) => ({ ...prev, logo: result.url }));
-    } catch (err) {
-      alert('Gagal mengunggah logo perusahaan. Silakan coba lagi.');
-      console.error(err);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const openAddModal = () => {
-    setEditingExperience(null);
-    setFormData({
-      title: '',
-      company: '',
-      logo: '',
-      location: '',
-      period: '',
-      description: '',
-      skills: '',
-    });
+  const openAdd = () => {
+    setEditing(null);
+    setForm(emptyForm);
+    setError('');
     setModalOpen(true);
   };
 
-  const openEditModal = (exp: Experience) => {
-    setEditingExperience(exp);
-    setFormData({
+  const openEdit = (exp: Experience) => {
+    setEditing(exp);
+    setForm({
       title: exp.title,
       company: exp.company,
       logo: exp.logo || '',
@@ -140,331 +73,233 @@ export default function AdminExperiencePage() {
       description: exp.description,
       skills: exp.skills ? exp.skills.join(', ') : '',
     });
+    setError('');
     setModalOpen(true);
+  };
+
+  const uploadLogo = async (files: File[]) => {
+    try {
+      const [url] = await upload(files.slice(0, 1));
+      set('logo', url);
+    } catch {
+      setError('Gagal mengunggah logo. Coba lagi.');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setError('');
+
     const payload = {
-      ...(editingExperience ? { id: editingExperience.id, order: editingExperience.order } : {}),
-      title: formData.title,
-      company: formData.company,
-      logo: formData.logo,
-      location: formData.location,
-      period: formData.period,
-      description: formData.description,
-      skills: formData.skills
+      ...(editing ? { id: editing.id, order: editing.order } : {}),
+      ...form,
+      skills: form.skills
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean),
     };
 
-    if (editingExperience) {
-      await fetch('/api/experience', {
-        method: 'PUT',
+    try {
+      const res = await fetch('/api/experience', {
+        method: editing ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-    } else {
-      await fetch('/api/experience', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      if (!res.ok) throw new Error('Save failed');
+      setModalOpen(false);
+      reload();
+    } catch {
+      setError('Gagal menyimpan pengalaman. Coba lagi.');
+    } finally {
+      setSaving(false);
     }
-
-    setModalOpen(false);
-    fetchExperience();
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this experience record?')) return;
-    await fetch(`/api/experience?id=${id}`, { method: 'DELETE' });
-    fetchExperience();
+  const handleDelete = async (exp: Experience) => {
+    if (!confirm(`Hapus pengalaman "${exp.title}" di ${exp.company}?`)) return;
+    await fetch(`/api/experience?id=${exp.id}`, { method: 'DELETE' });
+    reload();
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manage Experience</h1>
-          <p className="text-sm text-slate-500 mt-1">Add, edit, or delete work history records.</p>
-        </div>
-        <Button variant="primary" icon={<FiPlus />} onClick={openAddModal}>
-          Add Experience
-        </Button>
-      </div>
+      <PageHeader
+        title="Pengalaman"
+        description={loading ? 'Memuat…' : `${experiences.length} riwayat kerja. Urutan di sini = urutan di website.`}
+        action={
+          <button onClick={openAdd} className="btn btn-primary">
+            <FiPlus className="h-4 w-4" /> Tambah pengalaman
+          </button>
+        }
+      />
 
-      <Card className="p-0 overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center text-slate-500 text-sm">Loading experience...</div>
-        ) : experiences.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 text-sm">No experience records found.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-slate-700 uppercase text-[11px] font-bold border-b border-slate-200">
-                <tr>
-                  <th className="px-6 py-4">Role & Company</th>
-                  <th className="px-6 py-4">Period</th>
-                  <th className="px-6 py-4">Skills</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {experiences.map((exp, index) => (
-                  <tr key={exp.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3.5">
-                        {exp.logo ? (
-                          <div className="w-11 h-11 rounded-xl border border-slate-200 bg-white p-1.5 flex items-center justify-center shrink-0 shadow-xs overflow-hidden">
-                            <img
-                              src={exp.logo}
-                              alt={exp.company}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
-                            <FiBriefcase className="w-5 h-5 text-slate-500" />
-                          </div>
-                        )}
-                        <div>
-                          <div className="font-bold text-slate-900">{exp.title}</div>
-                          <div className="text-xs text-[#3b4d35] font-semibold flex items-center gap-1 mt-0.5">
-                            {exp.company}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-xs text-slate-600">
-                      <div className="flex items-center gap-1">
-                        <FiCalendar className="w-3 h-3 text-slate-400" /> {exp.period}
-                      </div>
-                      {exp.location && (
-                        <div className="flex items-center gap-1 text-slate-400 mt-0.5">
-                          <FiMapPin className="w-3 h-3" /> {exp.location}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {exp.skills?.map((s) => (
-                          <span
-                            key={s}
-                            className="px-2 py-0.5 text-[10px] font-medium bg-slate-100 text-slate-700 rounded"
-                          >
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => handleMove(index, 'up')}
-                          disabled={index === 0}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer"
-                          title="Geser ke Atas"
-                        >
-                          <FiChevronUp className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleMove(index, 'down')}
-                          disabled={index === experiences.length - 1}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors disabled:opacity-20 disabled:cursor-not-allowed cursor-pointer"
-                          title="Geser ke Bawah"
-                        >
-                          <FiChevronDown className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => openEditModal(exp)}
-                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors cursor-pointer ml-1"
-                          title="Edit"
-                        >
-                          <FiEdit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(exp.id)}
-                          className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
-                          title="Delete"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
-
-      {/* Add / Edit Modal */}
-      <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={editingExperience ? 'Edit Experience' : 'Add Experience'}
-        maxWidth="lg"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-              Job Title
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Fullstack Developer"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-                Company Name
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Google, BSN"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                placeholder="Jakarta, Indonesia"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
-              />
-            </div>
-          </div>
-
-          {/* Company Logo Upload Box */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-              Logo Perusahaan
-            </label>
-            <div className="border-2 border-dashed border-slate-200 hover:border-[#3b4d35] rounded-xl p-4 transition-colors bg-slate-50/50">
-              {formData.logo ? (
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-xl border border-slate-200 bg-white p-1.5 flex items-center justify-center shadow-xs overflow-hidden shrink-0">
-                      <img
-                        src={formData.logo}
-                        alt="Logo Preview"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className="overflow-hidden">
-                      <div className="text-xs font-semibold text-slate-800 truncate max-w-[200px] sm:max-w-xs">
-                        {formData.logo}
-                      </div>
-                      <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
-                        <FiCheck className="w-3.5 h-3.5" /> Logo siap digunakan
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, logo: '' })}
-                    className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
-                    title="Hapus logo"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
-                </div>
+      <ListShell loading={loading} empty={experiences.length === 0} emptyText="Belum ada pengalaman.">
+        {experiences.map((exp, index) => (
+          <li key={exp.id} className="flex items-center gap-4 px-4 py-3.5 transition-colors hover:bg-paper/60 sm:px-5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-surface p-1.5">
+              {exp.logo ? (
+                <img src={exp.logo} alt="" className="h-full w-full object-contain" />
               ) : (
-                <label className="flex flex-col items-center justify-center cursor-pointer py-3">
-                  <FiUploadCloud className="w-8 h-8 text-[#3b4d35] mb-1.5" />
-                  <span className="text-xs font-bold text-slate-700 mb-0.5">
-                    {uploading ? 'Mengunggah logo...' : 'Klik untuk upload logo perusahaan'}
-                  </span>
-                  <span className="text-[11px] text-slate-500">
-                    PNG, SVG, JPG, atau WebP (Rasio persegi direkomendasikan)
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    disabled={uploading}
-                    className="hidden"
-                  />
-                </label>
+                <FiBriefcase className="h-4 w-4 text-faint" />
               )}
             </div>
 
-            {/* Manual URL input fallback */}
-            <div className="mt-2">
-              <input
-                type="text"
-                placeholder="Atau tempel URL gambar logo (opsional)"
-                value={formData.logo}
-                onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs text-slate-600 outline-none focus:border-[#3b4d35]"
-              />
+            <div className="min-w-0 flex-1">
+              <p className="t-body truncate font-medium text-ink">{exp.title}</p>
+              <p className="t-small truncate text-muted">
+                {exp.company}
+                {exp.location ? ` · ${exp.location}` : ''}
+              </p>
+              <p className="t-small mt-0.5 truncate text-faint">
+                {exp.period}
+                {exp.skills?.length ? ` · ${formatTags(exp.skills).join(', ')}` : ''}
+              </p>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-              Period
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. November 2025 - Present"
-              value={formData.period}
-              onChange={(e) => setFormData({ ...formData, period: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
+            <div className="flex shrink-0 items-center gap-0.5">
+              <button
+                onClick={() => handleMove(index, 'up')}
+                disabled={index === 0}
+                className="icon-btn"
+                title="Naikkan"
+                aria-label="Naikkan urutan"
+              >
+                <FiChevronUp className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => handleMove(index, 'down')}
+                disabled={index === experiences.length - 1}
+                className="icon-btn"
+                title="Turunkan"
+                aria-label="Turunkan urutan"
+              >
+                <FiChevronDown className="h-4 w-4" />
+              </button>
+              <span className="mx-1 h-5 w-px bg-line" />
+              <button onClick={() => openEdit(exp)} className="icon-btn" title="Edit" aria-label={`Edit ${exp.title}`}>
+                <FiEdit2 className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(exp)}
+                className="icon-btn hover:bg-red-50 hover:text-red-600"
+                title="Hapus"
+                aria-label={`Hapus ${exp.title}`}
+              >
+                <FiTrash2 className="h-4 w-4" />
+              </button>
+            </div>
+          </li>
+        ))}
+      </ListShell>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing ? 'Edit pengalaman' : 'Tambah pengalaman'}
+        maxWidth="xl"
+        footer={
+          <>
+            {error && <span className="t-small mr-auto text-red-600">{error}</span>}
+            <button type="button" onClick={() => setModalOpen(false)} className="btn btn-ghost">
+              Batal
+            </button>
+            <button
+              type="submit"
+              form="experience-form"
+              disabled={saving || uploading}
+              className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {saving ? 'Menyimpan…' : editing ? 'Simpan perubahan' : 'Tambah pengalaman'}
+            </button>
+          </>
+        }
+      >
+        <form id="experience-form" onSubmit={handleSubmit} className="space-y-6">
+          <FormSection title="Posisi">
+            <Field label="Jabatan" htmlFor="e-title">
+              <input
+                id="e-title"
+                required
+                value={form.title}
+                onChange={(e) => set('title', e.target.value)}
+                placeholder="mis. Fullstack Developer"
+                className="input"
+              />
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Perusahaan" htmlFor="e-company">
+                <input
+                  id="e-company"
+                  required
+                  value={form.company}
+                  onChange={(e) => set('company', e.target.value)}
+                  className="input"
+                />
+              </Field>
+              <Field label="Lokasi" htmlFor="e-location">
+                <input
+                  id="e-location"
+                  value={form.location}
+                  onChange={(e) => set('location', e.target.value)}
+                  placeholder="Kuningan, Indonesia"
+                  className="input"
+                />
+              </Field>
+            </div>
+            <Field label="Periode" htmlFor="e-period">
+              <input
+                id="e-period"
+                required
+                value={form.period}
+                onChange={(e) => set('period', e.target.value)}
+                placeholder="November 2025 - Present"
+                className="input"
+              />
+            </Field>
+          </FormSection>
+
+          <FormSection title="Logo perusahaan">
+            <ImageField
+              value={form.logo}
+              onChange={(v) => set('logo', v)}
+              onFiles={uploadLogo}
+              uploading={uploading}
+              square
+              hint="Rasio persegi paling rapi"
             />
-          </div>
+            <Field label="atau tempel URL logo" htmlFor="e-logo">
+              <input
+                id="e-logo"
+                value={form.logo}
+                onChange={(e) => set('logo', e.target.value)}
+                placeholder="https://… atau /uploads/…"
+                className="input"
+              />
+            </Field>
+          </FormSection>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-              Description
-            </label>
-            <textarea
-              required
-              rows={3}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
-              Skills Used (comma separated)
-            </label>
-            <input
-              type="text"
-              placeholder="Laravel, Vue.js, Selenium, Postman"
-              value={formData.skills}
-              onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm outline-none focus:border-[#3b4d35]"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-            <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary">
-              {editingExperience ? 'Save Changes' : 'Create Record'}
-            </Button>
-          </div>
+          <FormSection title="Detail">
+            <Field label="Deskripsi" htmlFor="e-desc">
+              <textarea
+                id="e-desc"
+                required
+                rows={4}
+                value={form.description}
+                onChange={(e) => set('description', e.target.value)}
+                className="input"
+              />
+            </Field>
+            <Field label="Skill" htmlFor="e-skills" hint="Pisahkan dengan koma.">
+              <input
+                id="e-skills"
+                value={form.skills}
+                onChange={(e) => set('skills', e.target.value)}
+                placeholder="Laravel, Vue.js, Postman"
+                className="input"
+              />
+            </Field>
+          </FormSection>
         </form>
       </Modal>
     </div>

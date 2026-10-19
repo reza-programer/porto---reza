@@ -3,6 +3,10 @@
   "title": "Junior Fullstack Developer & Manual QA",
   "bio": "Passionate Junior Fullstack Developer & Manual Quality Assurance. Experienced in building clean web applications and ensuring software reliability through manual testing, API testing, and quality control.",
   "avatar": "/images/profile.png",
+  "avatarAlts": [
+    "/images/profile-alt.jpg",
+    "/images/profile-alt-2.jpg"
+  ],
   "email": "reza25022003@gmail.com",
   "phone": "+62 812-2429-0502",
   "location": "Kuningan, Indonesia",

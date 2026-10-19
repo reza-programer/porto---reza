@@ -39,6 +39,8 @@ export interface Profile {
   title: string;
   bio: string;
   avatar: string;
+  /** Extra photos; when set, the ID card cycles through avatar + these. */
+  avatarAlts?: string[];
   email: string;
   phone?: string;
   location: string;
