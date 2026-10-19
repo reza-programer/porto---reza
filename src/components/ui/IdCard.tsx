@@ -247,7 +247,7 @@ export const IdCard: React.FC<{ profile: Profile }> = ({ profile }) => {
                   <span className="eyebrow text-[10px]">Portfolio ID</span>
                 </div>
 
-                <div className="relative mx-5 mt-3.5 aspect-[4/5] overflow-hidden rounded-xl bg-[#cfd4dc] [container-type:size]">
+                <div className="relative mx-5 mt-3.5 aspect-[4/5] overflow-hidden rounded-xl bg-[#cfd4dc]">
                   <PhotoCycle photos={photos} positions={photoPositions} alt={profile.name} />
                 </div>
 

@@ -1,236 +1,297 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { animate, motion, useMotionTemplate, useMotionValue, useTransform } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 
 /*
- * Cycles the ID-card photo through several images, each switch using a
- * different transition:
+ * Cycles the ID-card photo through several images on a <canvas>, each switch
+ * using a different transition:
  *   burst  – a ring of light expands from the chest and reveals the next photo
  *   pixels – the next photo assembles from small tiles, like a digital dissolve
  *   scan   – a soft-edged scan line sweeps the next photo in from the top
- * The container must be `relative overflow-hidden` with container-type: size
- * (so `cqh` units refer to the photo's height).
+ *
+ * Drawing every frame ourselves (instead of stacking <img> layers with
+ * clip-path / mask) means no flash when a photo swaps, no half-decoded first
+ * frames, and nothing for Safari's 3D compositing to break inside the card.
+ * All photos are decoded before the first transition starts.
  */
 
 type Effect = 'burst' | 'pixels' | 'scan';
 const EFFECTS: Effect[] = ['burst', 'pixels', 'scan'];
 
 const HOLD_MS = 3000;
-const EASE = [0.65, 0, 0.35, 1] as const;
+const DURATION_MS: Record<Effect, number> = { burst: 1500, pixels: 1700, scan: 1800 };
 
-interface RevealProps {
-  src: string;
-  position: string;
-  alt: string;
-  reduce: boolean;
-  onDone: () => void;
-}
-
-function Photo({ src, position, alt, className = '', style }: {
-  src: string;
-  position: string;
-  alt: string;
-  className?: string;
-  style?: React.ComponentProps<typeof motion.img>['style'];
-}) {
-  return (
-    <motion.img
-      src={src}
-      alt={alt}
-      draggable={false}
-      className={`absolute inset-0 h-full w-full object-cover ${className}`}
-      style={{ objectPosition: position, ...style }}
-    />
-  );
-}
-
-/* ---- burst: circle of light from the chest ---------------------------- */
-
-const BURST_Y = 58; // % from top — roughly where the chest emblem sits
-
-function BurstReveal({ src, position, alt, reduce, onDone }: RevealProps) {
-  const r = useMotionValue(0); // radius in cqh; 80cqh covers the far corners
-  const clip = useMotionTemplate`circle(${r}cqh at 50% ${BURST_Y}%)`;
-  const ringLeft = useMotionTemplate`calc(50% - ${r}cqh)`;
-  const ringTop = useMotionTemplate`calc(${BURST_Y}% - ${r}cqh)`;
-  const ringSize = useTransform(r, (v) => `${v * 2}cqh`);
-  const ringOpacity = useTransform(r, [0, 6, 60, 80], [0, 1, 0.8, 0]);
-  const flash = useTransform(r, [0, 10, 40], [0, 0.35, 0]);
-  const scale = useTransform(r, [0, 80], [1.12, 1]);
-
-  useEffect(() => {
-    const controls = animate(r, 80, { duration: reduce ? 0 : 1.5, ease: [0.7, 0, 0.2, 1] });
-    controls.then(onDone);
-    return () => controls.stop();
-  }, [r, reduce, onDone]);
-
-  return (
-    <>
-      <Photo src={src} position={position} alt={alt} style={{ clipPath: clip, WebkitClipPath: clip, scale }} />
-      <motion.div aria-hidden className="pointer-events-none absolute inset-0 bg-white" style={{ opacity: flash }} />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute rounded-full shadow-[0_0_0_2px_rgba(255,255,255,0.85),0_0_28px_8px_rgba(255,255,255,0.55),inset_0_0_24px_4px_rgba(255,255,255,0.45)]"
-        style={{ left: ringLeft, top: ringTop, width: ringSize, height: ringSize, opacity: ringOpacity }}
-      />
-    </>
-  );
-}
-
-/* ---- pixels: tiles pop in --------------------------------------------- */
-
+const BURST_Y = 0.58; // where the chest emblem sits, as a fraction of height
+const FEATHER = 0.35; // softness of the scan edge, as a fraction of height
 const COLS = 7;
 const ROWS = 9;
+const TILE_MS = 450;
 
-// Deterministic jitter in [0, 1) so the pattern is stable.
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+// Deterministic jitter in [0, 1) so the tile pattern is stable.
 const jitter = (i: number) => ((i * 9301 + 49297) % 233280) / 233280;
 
-const TILES = Array.from({ length: COLS * ROWS }, (_, i) => {
+const TILE_DELAYS = Array.from({ length: COLS * ROWS }, (_, i) => {
   const c = i % COLS;
   const r = Math.floor(i / COLS);
   // Sweep roughly from top-right to bottom-left, with noise so it feels digital.
-  const delay = ((COLS - 1 - c) / COLS) * 0.35 + (r / ROWS) * 0.45 + jitter(i) * 0.35;
-  return { c, r, delay };
+  return (((COLS - 1 - c) / COLS) * 0.3 + (r / ROWS) * 0.4 + jitter(i) * 0.3) * (DURATION_MS.pixels - TILE_MS);
 });
-const LAST_TILE = TILES.reduce((best, t, i) => (t.delay > TILES[best].delay ? i : best), 0);
 
-function PixelReveal({ src, position, alt, reduce, onDone }: RevealProps) {
-  useEffect(() => {
-    if (reduce) onDone();
-  }, [reduce, onDone]);
-  if (reduce) return null;
-
-  return (
-    <div aria-hidden className="absolute inset-0">
-      {TILES.map((t, i) => (
-        <motion.div
-          key={i}
-          className="absolute overflow-hidden"
-          style={{
-            left: `${(t.c / COLS) * 100}%`,
-            top: `${(t.r / ROWS) * 100}%`,
-            // Exact fractions: each tile's inner image is sized relative to the tile,
-            // so any overlap here would shift the pieces out of alignment.
-            width: `${100 / COLS}%`,
-            height: `${100 / ROWS}%`,
-          }}
-          initial={{ opacity: 0, scale: 0.2, filter: 'brightness(2.2)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'brightness(1)' }}
-          transition={{ duration: 0.45, delay: t.delay, ease: [0.16, 1, 0.3, 1] }}
-          onAnimationComplete={i === LAST_TILE ? onDone : undefined}
-        >
-          <img
-            src={src}
-            alt={i === 0 ? alt : ''}
-            draggable={false}
-            className="absolute max-w-none object-cover"
-            style={{
-              objectPosition: position,
-              width: `${COLS * 100}%`,
-              height: `${ROWS * 100}%`,
-              left: `${-t.c * 100}%`,
-              top: `${-t.r * 100}%`,
-            }}
-          />
-        </motion.div>
-      ))}
-    </div>
-  );
+interface Frame {
+  img: HTMLImageElement;
+  pos: [number, number];
 }
 
-/* ---- scan: soft-edged sweep ------------------------------------------- */
-
-const FEATHER = 35;
-
-function ScanReveal({ src, position, alt, reduce, onDone }: RevealProps) {
-  const p = useMotionValue(0);
-  const edge = useTransform(p, (v) => v * (100 + FEATHER) - FEATHER);
-  const mask = useMotionTemplate`linear-gradient(to bottom, #000 ${edge}%, transparent calc(${edge}% + ${FEATHER}%))`;
-  const lineTop = useTransform(edge, (e) => `${e + FEATHER / 2}%`);
-  const lineOpacity = useTransform(p, [0, 0.1, 0.9, 1], [0, 0.75, 0.75, 0]);
-  const scale = useTransform(p, [0, 1], [1.06, 1]);
-
-  useEffect(() => {
-    const controls = animate(p, 1, { duration: reduce ? 0 : 1.8, ease: EASE });
-    controls.then(onDone);
-    return () => controls.stop();
-  }, [p, reduce, onDone]);
-
-  return (
-    <>
-      <Photo src={src} position={position} alt={alt} style={{ maskImage: mask, WebkitMaskImage: mask, scale }} />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 h-px bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.55)]"
-        style={{ top: lineTop, opacity: lineOpacity }}
-      />
-    </>
-  );
+function parsePosition(p: string): [number, number] {
+  const [x = '50%', y = '50%'] = p.split(/\s+/);
+  return [parseFloat(x) / 100, parseFloat(y) / 100];
 }
 
-const REVEALS: Record<Effect, React.FC<RevealProps>> = {
-  burst: BurstReveal,
-  pixels: PixelReveal,
-  scan: ScanReveal,
-};
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+    img
+      .decode()
+      .then(() => resolve(img))
+      .catch(() => (img.complete && img.naturalWidth ? resolve(img) : reject(new Error(`Failed to load ${src}`))));
+  });
+}
 
-/* ---- cycle ------------------------------------------------------------ */
+/** Draws like `object-fit: cover` + `object-position`, optionally zoomed in. */
+function drawCover(ctx: CanvasRenderingContext2D, f: Frame, w: number, h: number, zoom = 1) {
+  const ir = f.img.naturalWidth / f.img.naturalHeight;
+  let dw = w;
+  let dh = w / ir;
+  if (dh < h) {
+    dh = h;
+    dw = h * ir;
+  }
+  dw *= zoom;
+  dh *= zoom;
+  ctx.drawImage(f.img, (w - dw) * f.pos[0], (h - dh) * f.pos[1], dw, dh);
+}
 
 export function PhotoCycle({ photos, positions, alt }: { photos: string[]; positions: string[]; alt: string }) {
-  const [index, setIndex] = useState(0);
-  const [incoming, setIncoming] = useState<{ to: number; effect: Effect; key: number } | null>(null);
-  const [reduce, setReduce] = useState(false);
-  const pendingTo = useRef(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ready, setReady] = useState(false);
+  const key = photos.join('|') + positions.join('|');
 
-  // Warm the cache so every switch is instant.
   useEffect(() => {
-    photos.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduce(mq.matches);
-    mq.addEventListener('change', update);
-    const t = window.setTimeout(update, 0);
-    return () => {
-      mq.removeEventListener('change', update);
-      window.clearTimeout(t);
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+
+    // Offscreen buffers: `next` holds the incoming photo, `work` composites the scan mask.
+    const next = document.createElement('canvas');
+    const work = document.createElement('canvas');
+    const nctx = next.getContext('2d')!;
+    const wctx = work.getContext('2d')!;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frames: Frame[] = [];
+    let index = 0;
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let raf = 0;
+    let timer = 0;
+    let animating = false;
+    let cancelled = false;
+
+    const drawStill = () => {
+      if (!frames.length || !w) return;
+      ctx.clearRect(0, 0, w, h);
+      drawCover(ctx, frames[index], w, h);
     };
-  }, [photos]);
 
-  // After each hold, start the next transition.
-  useEffect(() => {
-    if (incoming || photos.length < 2) return;
-    const t = window.setTimeout(() => {
-      const to = (index + 1) % photos.length;
-      pendingTo.current = to;
-      setIncoming({ to, effect: EFFECTS[index % EFFECTS.length], key: Date.now() });
-    }, HOLD_MS);
-    return () => window.clearTimeout(t);
-  }, [incoming, index, photos.length]);
+    const resize = () => {
+      // Layout size, not getBoundingClientRect: the card is 3D-rotated and scaled.
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      for (const c of [canvas, next, work]) {
+        c.width = Math.round(w * dpr);
+        c.height = Math.round(h * dpr);
+      }
+      for (const c of [ctx, nctx, wctx]) c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (!animating) drawStill();
+    };
 
-  // Stable so the running reveal's effect isn't restarted on re-render.
-  const finish = useCallback(() => {
-    setIndex(pendingTo.current);
-    setIncoming(null);
-  }, []);
+    const renderBurst = (from: Frame, to: Frame, p: number) => {
+      const e = easeInOut(p);
+      const cx = w / 2;
+      const cy = h * BURST_Y;
+      const r = e * Math.hypot(cx, Math.max(cy, h - cy)) * 1.04;
 
-  const Reveal = incoming ? REVEALS[incoming.effect] : null;
+      drawCover(ctx, from, w, h);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(0, r), 0, Math.PI * 2);
+      ctx.clip();
+      drawCover(ctx, to, w, h, 1.12 - 0.12 * e);
+      ctx.restore();
+
+      const flash = p < 0.1 ? (p / 0.1) * 0.3 : 0.3 * clamp01(1 - (p - 0.1) / 0.3);
+      if (flash > 0) {
+        ctx.fillStyle = `rgba(255,255,255,${flash})`;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      const ring = p < 0.08 ? p / 0.08 : clamp01(1 - (p - 0.7) / 0.3);
+      if (ring > 0 && r > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = `rgba(255,255,255,${0.9 * ring})`;
+        ctx.shadowColor = `rgba(255,255,255,${0.85 * ring})`;
+        ctx.shadowBlur = 22;
+        ctx.stroke();
+        ctx.restore();
+      }
+    };
+
+    const renderPixels = (from: Frame, p: number) => {
+      const elapsed = p * DURATION_MS.pixels;
+      const tw = w / COLS;
+      const th = h / ROWS;
+
+      drawCover(ctx, from, w, h);
+      TILE_DELAYS.forEach((delay, i) => {
+        const t = clamp01((elapsed - delay) / TILE_MS);
+        if (t <= 0) return;
+        const k = easeOutExpo(t);
+        const s = 0.25 + 0.75 * k;
+        const c = i % COLS;
+        const r = Math.floor(i / COLS);
+        const dw = tw * s + 0.5;
+        const dh = th * s + 0.5;
+        const dx = c * tw + (tw - dw) / 2;
+        const dy = r * th + (th - dh) / 2;
+
+        ctx.globalAlpha = Math.min(1, t * 2.5);
+        ctx.drawImage(next, c * tw * dpr, r * th * dpr, tw * dpr, th * dpr, dx, dy, dw, dh);
+        const glow = (1 - k) * 0.55;
+        if (glow > 0.01) {
+          ctx.fillStyle = `rgba(255,255,255,${glow})`;
+          ctx.fillRect(dx, dy, dw, dh);
+        }
+        ctx.globalAlpha = 1;
+      });
+    };
+
+    const renderScan = (from: Frame, to: Frame, p: number) => {
+      const e = easeInOut(p);
+      const edge = (e * (1 + FEATHER) - FEATHER) * h;
+
+      drawCover(ctx, from, w, h);
+
+      wctx.globalCompositeOperation = 'source-over';
+      wctx.clearRect(0, 0, w, h);
+      drawCover(wctx, to, w, h, 1.06 - 0.06 * e);
+      wctx.globalCompositeOperation = 'destination-in';
+      const g = wctx.createLinearGradient(0, edge, 0, edge + FEATHER * h);
+      g.addColorStop(0, 'rgba(0,0,0,1)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      wctx.fillStyle = g;
+      wctx.fillRect(0, 0, w, h);
+      wctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(work, 0, 0, w, h);
+
+      const line = (p < 0.1 ? p / 0.1 : p > 0.9 ? (1 - p) / 0.1 : 1) * 0.75;
+      if (line > 0) {
+        ctx.save();
+        ctx.fillStyle = `rgba(255,255,255,${line})`;
+        ctx.shadowColor = 'rgba(255,255,255,0.85)';
+        ctx.shadowBlur = 16;
+        ctx.fillRect(0, edge + (FEATHER * h) / 2 - 0.5, w, 1);
+        ctx.restore();
+      }
+    };
+
+    const runTransition = () => {
+      const fromIdx = index;
+      const toIdx = (index + 1) % frames.length;
+      const effect = EFFECTS[fromIdx % EFFECTS.length];
+      const from = frames[fromIdx];
+      const to = frames[toIdx];
+      const duration = DURATION_MS[effect];
+
+      nctx.clearRect(0, 0, w, h);
+      drawCover(nctx, to, w, h);
+
+      animating = true;
+      const start = performance.now();
+      const tick = (now: number) => {
+        if (cancelled) return;
+        const p = clamp01((now - start) / duration);
+        ctx.clearRect(0, 0, w, h);
+        if (effect === 'burst') renderBurst(from, to, p);
+        else if (effect === 'pixels') renderPixels(from, p);
+        else renderScan(from, to, p);
+
+        if (p < 1) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          index = toIdx;
+          animating = false;
+          drawStill();
+          schedule();
+        }
+      };
+      raf = requestAnimationFrame(tick);
+    };
+
+    const schedule = () => {
+      if (cancelled || reduce || frames.length < 2) return;
+      timer = window.setTimeout(runTransition, HOLD_MS);
+    };
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    Promise.all(photos.map(loadImage))
+      .then((imgs) => {
+        if (cancelled) return;
+        frames = imgs.map((img, i) => ({ img, pos: parsePosition(positions[i] ?? '50% 50%') }));
+        resize();
+        drawStill();
+        setReady(true);
+        schedule();
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      ro.disconnect();
+    };
+    // `key` captures the photo list and positions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
   return (
     <>
-      <Photo src={photos[index]} position={positions[index]} alt={alt} />
-      {incoming && Reveal && (
-        <Reveal
-          key={incoming.key}
-          src={photos[incoming.to]}
-          position={positions[incoming.to]}
-          alt={alt}
-          reduce={reduce}
-          onDone={finish}
-        />
-      )}
+      {/* Server-rendered fallback (and what shows until the canvas is ready). */}
+      <img
+        src={photos[0]}
+        alt={alt}
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: positions[0] }}
+      />
+      <canvas
+        ref={canvasRef}
+        aria-hidden
+        className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${ready ? 'opacity-100' : 'opacity-0'}`}
+      />
     </>
   );
 }
