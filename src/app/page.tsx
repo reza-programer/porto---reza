@@ -2,7 +2,6 @@ import { getProfile, getProjects, getExperience, getCertificates } from '@/lib/d
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/sections/HeroSection';
-import { AboutSection } from '@/components/sections/AboutSection';
 import { SkillsSection } from '@/components/sections/SkillsSection';
 import { ExperienceSection } from '@/components/sections/ExperienceSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
@@ -24,7 +23,6 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection profile={profile} />
         <ProjectsSection projects={projects} />
-        <AboutSection profile={profile} />
         <SkillsSection profile={profile} />
         <ExperienceSection experiences={experiences} />
         <CertificatesSection certificates={certificates} />

@@ -7,10 +7,9 @@ import { FiArrowUpRight } from 'react-icons/fi';
 
 const navItems = [
   { no: '01', name: 'Work', href: 'projects' },
-  { no: '02', name: 'About', href: 'about' },
-  { no: '03', name: 'Skills', href: 'skills' },
-  { no: '04', name: 'Experience', href: 'experience' },
-  { no: '05', name: 'Certificates', href: 'certificates' },
+  { no: '02', name: 'Skills', href: 'skills' },
+  { no: '03', name: 'Experience', href: 'experience' },
+  { no: '04', name: 'Certificates', href: 'certificates' },
 ];
 
 const sectionIds = ['home', ...navItems.map((i) => i.href), 'contact'];
@@ -118,7 +117,7 @@ export const Navbar: React.FC = () => {
         }`}
       >
         <nav className="flex flex-col" aria-label="Mobile">
-          {[...navItems, { no: '06', name: 'Contact', href: 'contact' }].map((item, i) => (
+          {[...navItems, { no: '05', name: 'Contact', href: 'contact' }].map((item, i) => (
             <a
               key={item.href}
               href={hrefFor(item.href)}

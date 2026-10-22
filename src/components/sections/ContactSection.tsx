@@ -55,7 +55,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ profile }) => {
     <section id="contact" className="py-20 sm:py-28">
       <div className="wrap">
         <SectionHeader
-          index="06"
+          index="05"
           label="Contact"
           title="Get in touch"
           intro="Punya ide proyek atau ingin berdiskusi? Silakan hubungi saya melalui jalur di bawah atau kirim pesan langsung!"

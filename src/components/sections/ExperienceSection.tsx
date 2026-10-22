@@ -18,7 +18,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ experience
     <section id="experience" className="py-20 sm:py-28">
       <div className="wrap">
         <SectionHeader
-          index="04"
+          index="03"
           label="Experience"
           title="Work experience"
           intro="My professional journey and career milestones."

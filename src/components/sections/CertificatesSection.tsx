@@ -20,7 +20,7 @@ export const CertificatesSection: React.FC<CertificatesSectionProps> = ({ certif
     <section id="certificates" className="py-20 sm:py-28">
       <div className="wrap">
         <SectionHeader
-          index="05"
+          index="04"
           label="Certificates"
           title="Certificates & credentials"
           intro="Professional certifications and credentials I've earned."

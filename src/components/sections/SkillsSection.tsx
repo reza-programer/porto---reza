@@ -56,7 +56,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ profile }) => {
     <section id="skills" className="overflow-hidden py-20 sm:py-28">
       <div className="wrap">
         <SectionHeader
-          index="03"
+          index="02"
           label="Skills"
           title="Skills & technologies"
           intro="Tech stack and tools I use to build, test, and deploy modern applications."
