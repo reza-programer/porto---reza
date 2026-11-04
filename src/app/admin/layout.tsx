@@ -4,13 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { FiGrid, FiFolder, FiBriefcase, FiAward, FiLogOut, FiArrowUpRight } from 'react-icons/fi';
+import { FiGrid, FiFolder, FiBriefcase, FiAward, FiLock, FiLogOut, FiArrowUpRight } from 'react-icons/fi';
 
 const navItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: FiGrid },
   { name: 'Proyek', href: '/admin/projects', icon: FiFolder },
   { name: 'Pengalaman', href: '/admin/experience', icon: FiBriefcase },
   { name: 'Sertifikat', href: '/admin/certificates', icon: FiAward },
+  { name: 'Privasi', href: '/admin/settings', icon: FiLock },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -1,7 +1,9 @@
 import React from 'react';
 
 interface MacbookFrameProps {
-  src: string;
+  /** One screenshot, or several stacked so `active` can cross-fade between them. */
+  src: string | string[];
+  active?: number;
   alt: string;
   label?: string;
   eager?: boolean;
@@ -16,7 +18,9 @@ const DOCK_ICONS = ['#3a3a3a', '#6b6b6b', '#9a9a9a', '#cfcfcf', '#5a5a5a'];
  * object-contain, so it is never cropped. Every size inside uses container
  * units (cqw) so the whole device scales with its column.
  */
-export const MacbookFrame: React.FC<MacbookFrameProps> = ({ src, alt, label, eager = false, className = '' }) => {
+export const MacbookFrame: React.FC<MacbookFrameProps> = ({ src, active = 0, alt, label, eager = false, className = '' }) => {
+  const screens = Array.isArray(src) ? src : [src];
+
   return (
     <div className={`@container relative w-full select-none ${className}`}>
       {/* Lid */}
@@ -45,8 +49,20 @@ export const MacbookFrame: React.FC<MacbookFrameProps> = ({ src, alt, label, eag
               </span>
               <span className="w-[2.9cqw]" />
             </div>
-            <div className="aspect-[1920/920] bg-white">
-              <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} draggable={false} className="h-full w-full object-contain" />
+            <div className="relative aspect-[1920/920] bg-white">
+              {screens.map((s, i) => (
+                <img
+                  key={i}
+                  src={s}
+                  alt={i === active ? alt : ''}
+                  aria-hidden={i !== active}
+                  loading={eager && i === 0 ? 'eager' : 'lazy'}
+                  draggable={false}
+                  className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-700 ${
+                    i === active ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              ))}
             </div>
           </div>
 

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiArrowUpRight } from 'react-icons/fi';
 
 const navItems = [
   { no: '01', name: 'Work', href: 'projects' },
@@ -53,16 +52,18 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-          scrolled || open ? 'border-b border-line bg-paper/85 backdrop-blur-md' : 'border-b border-transparent'
+        className={`fixed inset-x-0 top-0 z-50 border-b-[3px] border-navy bg-navy text-white transition-shadow duration-300 ${
+          scrolled ? 'shadow-[0_6px_20px_-8px_rgba(12,35,64,0.6)]' : ''
         }`}
       >
-        <div className="wrap flex h-16 items-center justify-between gap-6">
-          <Link href="/#home" className="group flex items-baseline gap-3" onClick={() => setOpen(false)}>
-            <span className="text-[17px] font-semibold tracking-[-0.03em]">
-              Reza<span className="text-accent">.</span>
+        <div className="wrap flex h-[61px] items-center justify-between gap-6">
+          <Link href="/#home" className="flex items-baseline gap-3" onClick={() => setOpen(false)}>
+            <span className="font-marker text-[1.45rem] leading-none">
+              Reza<span className="text-flame">.</span>
             </span>
-            <span className="eyebrow hidden lg:inline">Fullstack &amp; QA</span>
+            <span className="hidden font-mono text-[0.68rem] font-bold uppercase tracking-[0.08em] text-ice lg:inline">
+              Fullstack &amp; QA
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
@@ -72,13 +73,13 @@ export const Navbar: React.FC = () => {
                 <a
                   key={item.href}
                   href={hrefFor(item.href)}
-                  className={`t-small group relative font-medium transition-colors ${
-                    active ? 'text-ink' : 'text-muted hover:text-ink'
+                  className={`group relative font-mono text-[0.75rem] font-bold uppercase tracking-[0.06em] transition-colors ${
+                    active ? 'text-white' : 'text-white/65 hover:text-white'
                   }`}
                 >
                   {item.name}
                   <span
-                    className={`absolute -bottom-1.5 left-0 h-px bg-ink transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    className={`absolute -bottom-1.5 left-0 h-[3px] rounded-full bg-flame transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                       active ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}
                   />
@@ -87,19 +88,16 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          <div className="hidden items-center gap-5 md:flex">
-            <a
-              href={hrefFor('contact')}
-              className="btn btn-primary group py-2.5"
-            >
-              Contact
-              <FiArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </a>
-          </div>
+          <a
+            href={hrefFor('contact')}
+            className="hidden items-center gap-2 rounded-full border-2 border-white bg-flame px-4 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.04em] transition-transform duration-200 hover:-translate-y-0.5 md:inline-flex"
+          >
+            Contact <span aria-hidden>↗</span>
+          </a>
 
           <button
             onClick={() => setOpen((v) => !v)}
-            className="eyebrow -mr-2 cursor-pointer p-2 text-ink md:hidden"
+            className="-mr-2 cursor-pointer p-2 font-mono text-[0.75rem] font-bold uppercase md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
           >
@@ -108,11 +106,11 @@ export const Navbar: React.FC = () => {
         </div>
       </header>
 
-      {/* Mobile menu — kept outside <header>: the header's backdrop-filter would
-          otherwise become the containing block for this fixed panel and clip it. */}
+      {/* Mobile menu — kept outside <header> so the fixed panel is positioned
+          against the viewport rather than the header. */}
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col justify-between bg-paper px-5 pb-8 pt-6 transition-[opacity,visibility] duration-300 md:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col justify-between bg-navy px-5 pb-8 pt-6 text-white transition-[opacity,visibility] duration-300 md:hidden ${
           open ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
       >
@@ -122,7 +120,7 @@ export const Navbar: React.FC = () => {
               key={item.href}
               href={hrefFor(item.href)}
               onClick={() => setOpen(false)}
-              className="flex items-baseline justify-between border-b border-line py-4"
+              className="flex items-baseline justify-between border-b-2 border-white/15 py-4"
               style={{
                 transition: 'transform 600ms cubic-bezier(0.16,1,0.3,1), opacity 600ms',
                 transitionDelay: open ? `${i * 40}ms` : '0ms',
@@ -130,12 +128,12 @@ export const Navbar: React.FC = () => {
                 opacity: open ? 1 : 0,
               }}
             >
-              <span className="t-h2">{item.name}</span>
-              <span className="t-small tabular-nums text-faint">{item.no}</span>
+              <span className="font-marker text-[2rem] uppercase leading-none">{item.name}</span>
+              <span className="font-mono text-xs tabular-nums text-ice">{item.no}</span>
             </a>
           ))}
         </nav>
-        <div className="eyebrow">Kuningan, Indonesia</div>
+        <div className="font-hand text-2xl text-ice">Kuningan, Indonesia</div>
       </div>
     </>
   );

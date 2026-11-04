@@ -21,7 +21,7 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        <HeroSection profile={profile} />
+        <HeroSection profile={profile} projects={projects} />
         <ProjectsSection projects={projects} />
         <SkillsSection profile={profile} />
         <ExperienceSection experiences={experiences} />

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Project, Experience, Certificate, Profile, ContactMessage } from '@/types';
+import type { Project, Experience, Certificate, Profile, ContactMessage, SiteSettings } from '@/types';
 
 const dataDir = path.join(process.cwd(), 'src', 'data');
 
@@ -102,6 +102,19 @@ export function saveMessage(message: ContactMessage): void {
   const messages = getMessages();
   messages.push(message);
   writeJSON('messages.json', messages);
+}
+
+// Site settings (privacy mode). Missing file means the defaults: site open, no password.
+export function getSettings(): SiteSettings {
+  try {
+    return { privateMode: false, passwordHash: '', ...readJSON<Partial<SiteSettings>>('settings.json') };
+  } catch {
+    return { privateMode: false, passwordHash: '' };
+  }
+}
+
+export function saveSettings(settings: SiteSettings): void {
+  writeJSON('settings.json', settings);
 }
 
 // Generate unique ID

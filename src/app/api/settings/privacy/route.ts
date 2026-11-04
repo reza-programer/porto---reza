@@ -1,0 +1,44 @@
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { hash } from 'bcryptjs';
+import { authOptions } from '@/lib/auth';
+import { getSettings, saveSettings } from '@/lib/data';
+
+const MIN_PASSWORD = 4;
+
+/** What the admin panel sees: the switch and whether a password exists, never the hash. */
+function publicState() {
+  const { privateMode, passwordHash } = getSettings();
+  return { privateMode, hasPassword: !!passwordHash };
+}
+
+export async function GET() {
+  if (!(await getServerSession(authOptions))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  return NextResponse.json(publicState());
+}
+
+/** Body: `{ privateMode?: boolean, password?: string }`. */
+export async function PUT(request: Request) {
+  if (!(await getServerSession(authOptions))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const body = await request.json().catch(() => ({}));
+  const settings = getSettings();
+
+  if (typeof body.password === 'string') {
+    const password = body.password.trim();
+    if (password.length < MIN_PASSWORD) {
+      return NextResponse.json({ error: `Password minimal ${MIN_PASSWORD} karakter.` }, { status: 400 });
+    }
+    settings.passwordHash = await hash(password, 10);
+  }
+
+  if (typeof body.privateMode === 'boolean') {
+    if (body.privateMode && !settings.passwordHash) {
+      return NextResponse.json({ error: 'Atur password dulu sebelum menyalakan mode privasi.' }, { status: 400 });
+    }
+    settings.privateMode = body.privateMode;
+  }
+
+  saveSettings(settings);
+  return NextResponse.json(publicState());
+}

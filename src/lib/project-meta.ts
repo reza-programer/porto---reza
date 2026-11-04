@@ -63,6 +63,7 @@ export function getProjectMeta(project: Project): ProjectMeta {
   if (isQA) category = 'Quality Assurance';
   else if (title.includes('mizuki')) category = 'Hotel Reservation';
   else if (title.includes('simtah')) category = 'GIS & Gov Platform';
+  else if (title.includes('distro')) category = 'Mobile E‑Commerce';
   else if (project.tags.some((t) => t.toLowerCase().includes('apriori'))) category = 'Data Mining · E‑Commerce';
   else if (title.includes('sparta')) category = 'E‑Commerce';
   else if (title.includes('office')) category = 'Enterprise System';

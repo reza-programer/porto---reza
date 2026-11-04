@@ -70,6 +70,13 @@ export interface Skill {
   icon?: string;
 }
 
+export interface SiteSettings {
+  /** When on, public pages ask for the visitor password first. */
+  privateMode: boolean;
+  /** bcrypt hash of the visitor password; empty until one is set. */
+  passwordHash: string;
+}
+
 export interface ContactMessage {
   id: string;
   name: string;
