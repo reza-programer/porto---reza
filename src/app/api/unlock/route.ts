@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { compare } from 'bcryptjs';
 import { getSettings } from '@/lib/data';
-import { ACCESS_COOKIE, ACCESS_MAX_AGE, accessToken } from '@/lib/privacy';
+import { ACCESS_COOKIE, issueAccessToken } from '@/lib/privacy';
 
-/** Checks the visitor password and, if it matches, hands out the access cookie. */
+/** Checks the visitor password and, if it matches, hands out a time-limited access cookie. */
 export async function POST(request: Request) {
-  const { privateMode, passwordHash } = getSettings();
+  const { privateMode, passwordHash, accessMinutes } = getSettings();
   if (!privateMode || !passwordHash) return NextResponse.json({ ok: true });
 
   let password = '';
@@ -23,12 +23,12 @@ export async function POST(request: Request) {
 
   const proto = request.headers.get('x-forwarded-proto') ?? new URL(request.url).protocol.replace(':', '');
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ACCESS_COOKIE, accessToken(passwordHash), {
+  response.cookies.set(ACCESS_COOKIE, issueAccessToken(passwordHash), {
     httpOnly: true,
     sameSite: 'lax',
     secure: proto === 'https',
     path: '/',
-    maxAge: ACCESS_MAX_AGE,
+    maxAge: accessMinutes * 60,
   });
   return response;
 }

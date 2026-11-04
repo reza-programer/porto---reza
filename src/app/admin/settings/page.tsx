@@ -7,7 +7,14 @@ import { Field, PageHeader } from '@/components/admin/AdminUI';
 interface PrivacyState {
   privateMode: boolean;
   hasPassword: boolean;
+  accessMinutes: number;
 }
+
+// Must match ACCESS_CHOICES in lib/privacy (server-only, so not imported here).
+const DURATIONS = [
+  { minutes: 30, label: '30 menit' },
+  { minutes: 60, label: '1 jam' },
+];
 
 /** Privacy mode: lock the public site behind a visitor password while it's being built. */
 export default function AdminPrivacyPage() {
@@ -128,6 +135,35 @@ export default function AdminPrivacyPage() {
               className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-[left] duration-200 ${on ? 'left-6' : 'left-1'}`}
             />
           </button>
+        </div>
+      </section>
+
+      {/* Access duration */}
+      <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
+        <h2 className="t-h3">Lama akses</h2>
+        <p className="t-body mt-1 text-muted">
+          Setelah memasukkan password, pengunjung bisa melihat website selama ini. Begitu habis, halamannya otomatis terkunci lagi dan
+          password harus dimasukkan ulang.
+        </p>
+        <div role="radiogroup" aria-label="Lama akses" className="mt-5 inline-flex rounded-full border border-line bg-paper p-1">
+          {DURATIONS.map((d) => {
+            const selected = state?.accessMinutes === d.minutes;
+            return (
+              <button
+                key={d.minutes}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                disabled={!state || busy}
+                onClick={() => !selected && save({ accessMinutes: d.minutes }, `Lama akses diubah jadi ${d.label}.`)}
+                className={`t-small cursor-pointer rounded-full px-4 py-2 font-medium transition-colors disabled:cursor-not-allowed ${
+                  selected ? 'bg-ink text-paper' : 'text-muted hover:text-ink'
+                }`}
+              >
+                {d.label}
+              </button>
+            );
+          })}
         </div>
       </section>
 

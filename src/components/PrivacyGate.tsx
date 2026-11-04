@@ -1,17 +1,25 @@
 import React from 'react';
 import { getProfile } from '@/lib/data';
-import { isLocked } from '@/lib/privacy';
+import { getAccess } from '@/lib/privacy';
+import { AccessTimer } from '@/components/AccessTimer';
 import { LockScreen } from '@/components/LockScreen';
 
 /*
  * Wraps a public page: while privacy mode keeps this visitor out it renders
  * the "kepo yaaa" lock screen instead, so none of the page's content is sent.
+ * Once they're in, a timer brings the lock back when their access runs out.
  * Checked while rendering (not in a proxy) so it works on any host.
  */
 export async function PrivacyGate({ children }: { children: React.ReactNode }) {
-  if (await isLocked()) {
+  const { locked, expiresAt } = await getAccess();
+  if (locked) {
     const profile = getProfile();
     return <LockScreen avatar={profile.avatar || '/images/profile.png'} email={profile.email} />;
   }
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {expiresAt && <AccessTimer expiresAt={expiresAt} />}
+    </>
+  );
 }

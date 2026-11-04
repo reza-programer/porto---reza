@@ -104,12 +104,14 @@ export function saveMessage(message: ContactMessage): void {
   writeJSON('messages.json', messages);
 }
 
-// Site settings (privacy mode). Missing file means the defaults: site open, no password.
+// Site settings (privacy mode). Missing file or fields fall back to these.
+const DEFAULT_SETTINGS: SiteSettings = { privateMode: false, passwordHash: '', accessMinutes: 60 };
+
 export function getSettings(): SiteSettings {
   try {
-    return { privateMode: false, passwordHash: '', ...readJSON<Partial<SiteSettings>>('settings.json') };
+    return { ...DEFAULT_SETTINGS, ...readJSON<Partial<SiteSettings>>('settings.json') };
   } catch {
-    return { privateMode: false, passwordHash: '' };
+    return { ...DEFAULT_SETTINGS };
   }
 }
 

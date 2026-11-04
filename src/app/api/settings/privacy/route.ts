@@ -3,13 +3,14 @@ import { getServerSession } from 'next-auth';
 import { hash } from 'bcryptjs';
 import { authOptions } from '@/lib/auth';
 import { getSettings, saveSettings } from '@/lib/data';
+import { ACCESS_CHOICES } from '@/lib/privacy';
 
 const MIN_PASSWORD = 4;
 
-/** What the admin panel sees: the switch and whether a password exists, never the hash. */
+/** What the admin panel sees: the switch, the duration and whether a password exists, never the hash. */
 function publicState() {
-  const { privateMode, passwordHash } = getSettings();
-  return { privateMode, hasPassword: !!passwordHash };
+  const { privateMode, passwordHash, accessMinutes } = getSettings();
+  return { privateMode, hasPassword: !!passwordHash, accessMinutes };
 }
 
 export async function GET() {
@@ -17,7 +18,7 @@ export async function GET() {
   return NextResponse.json(publicState());
 }
 
-/** Body: `{ privateMode?: boolean, password?: string }`. */
+/** Body: `{ privateMode?: boolean, password?: string, accessMinutes?: number }`. */
 export async function PUT(request: Request) {
   if (!(await getServerSession(authOptions))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -37,6 +38,13 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Atur password dulu sebelum menyalakan mode privasi.' }, { status: 400 });
     }
     settings.privateMode = body.privateMode;
+  }
+
+  if (body.accessMinutes !== undefined) {
+    if (!ACCESS_CHOICES.includes(body.accessMinutes)) {
+      return NextResponse.json({ error: 'Durasi akses tidak dikenal.' }, { status: 400 });
+    }
+    settings.accessMinutes = body.accessMinutes;
   }
 
   try {

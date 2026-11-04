@@ -75,6 +75,8 @@ export interface SiteSettings {
   privateMode: boolean;
   /** bcrypt hash of the visitor password; empty until one is set. */
   passwordHash: string;
+  /** How long one correct password lets a visitor in before asking again. */
+  accessMinutes: number;
 }
 
 export interface ContactMessage {
