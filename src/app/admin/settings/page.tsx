@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FiArrowUpRight, FiEye, FiEyeOff, FiLock, FiUnlock } from 'react-icons/fi';
 import { Field, PageHeader } from '@/components/admin/AdminUI';
 
@@ -17,12 +17,16 @@ export default function AdminPrivacyPage() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetch('/api/settings/privacy')
       .then((res) => res.json())
       .then(setState)
       .catch(() => setNotice({ tone: 'error', text: 'Gagal memuat pengaturan.' }));
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const save = async (body: Partial<PrivacyState> & { password?: string }, done: string) => {
     setBusy(true);
@@ -33,13 +37,16 @@ export default function AdminPrivacyPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan.');
+      // An empty or non-JSON reply (e.g. the dev server reloading mid-request) shouldn't surface as a parser error.
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data) throw new Error(data?.error || 'Server tidak merespons dengan benar. Coba simpan lagi.');
       setState(data);
       setNotice({ tone: 'ok', text: done });
       return true;
     } catch (err) {
       setNotice({ tone: 'error', text: err instanceof Error ? err.message : 'Gagal menyimpan.' });
+      // Show what was actually saved, whatever happened to this reply.
+      load();
       return false;
     } finally {
       setBusy(false);
@@ -165,7 +172,7 @@ export default function AdminPrivacyPage() {
       </section>
 
       <p className="t-small text-muted">
-        Selama kamu masuk sebagai admin, kamu tetap bisa melihat website tanpa password.
+        Saat mode privasi aktif, kamu juga akan melihat halaman kunci. Masukkan password pengunjung untuk membuka website.
       </p>
     </div>
   );
