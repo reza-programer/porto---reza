@@ -173,6 +173,7 @@ export default function AdminPrivacyPage() {
 
       <p className="t-small text-muted">
         Saat mode privasi aktif, kamu juga akan melihat halaman kunci. Masukkan password pengunjung untuk membuka website.
+        Website online di Netlify tidak bisa menyimpan perubahan dari sini: ubah pengaturan di admin lokal, lalu push ke GitHub.
       </p>
     </div>
   );

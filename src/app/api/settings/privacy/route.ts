@@ -39,6 +39,17 @@ export async function PUT(request: Request) {
     settings.privateMode = body.privateMode;
   }
 
-  saveSettings(settings);
+  try {
+    saveSettings(settings);
+  } catch {
+    // Hosts like Netlify run from a read-only copy of the repo.
+    return NextResponse.json(
+      {
+        error:
+          'Server ini tidak bisa menyimpan pengaturan (penyimpanan hosting hanya-baca). Ubah dari admin di komputer lokal, lalu push ke GitHub.',
+      },
+      { status: 500 }
+    );
+  }
   return NextResponse.json(publicState());
 }

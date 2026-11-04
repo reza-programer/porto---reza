@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 };
 
 /*
- * Shown in place of any public page while privacy mode is on (the proxy
- * rewrites to it). Opened directly it only shows while the site is locked,
- * or with ?preview so the admin can look at it.
+ * The lock screen on its own URL. Public pages render the same screen via
+ * PrivacyGate; this route is for opening it directly: it only shows while
+ * the site is locked, or with ?preview so the admin can look at it.
  */
 export default async function LockedPage({ searchParams }: { searchParams: Promise<{ preview?: string }> }) {
   const { preview } = await searchParams;
