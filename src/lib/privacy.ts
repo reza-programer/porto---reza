@@ -17,7 +17,7 @@ export const ACCESS_COOKIE = 'reza_access';
 export const ACCESS_CHOICES = [30, 60];
 
 export const lockedMetadata: Metadata = {
-  title: 'Sabar yaa… — Reza',
+  title: 'Privat — Reza',
   robots: { index: false, follow: false },
 };
 

@@ -6,7 +6,7 @@ import { LockScreen } from '@/components/LockScreen';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Sabar yaa… — Reza',
+  title: 'Privat — Reza',
   robots: { index: false, follow: false },
 };
 
@@ -20,5 +20,5 @@ export default async function LockedPage({ searchParams }: { searchParams: Promi
   if (!getSettings().privateMode && preview === undefined) redirect('/');
 
   const profile = getProfile();
-  return <LockScreen avatar={profile.avatar || '/images/profile.png'} email={profile.email} />;
+  return <LockScreen name={profile.name} avatar={profile.avatar || '/images/profile.png'} email={profile.email} />;
 }

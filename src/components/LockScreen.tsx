@@ -1,70 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { motion, useAnimate, useReducedMotion } from 'framer-motion';
+import { FiArrowRight, FiCheck, FiLock, FiUnlock } from 'react-icons/fi';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-/** Diagonal caution tape with a running label, laid across the screen. */
-function CautionTape({ className, reverse = false }: { className: string; reverse?: boolean }) {
-  const words = Array.from({ length: 8 }, (_, i) => (
-    <span key={i} className="flex items-center gap-6">
-      Lagi dibangun <span aria-hidden>✦</span> Under construction <span aria-hidden>✦</span>
-    </span>
-  ));
-  return (
-    <div aria-hidden className={`caution-tape absolute left-[-10%] z-0 w-[120%] overflow-hidden border-y-[3px] border-navy py-2 ${className}`}>
-      <div
-        className="ticker flex w-max gap-6 font-mono text-[0.78rem] font-bold uppercase tracking-[0.12em] text-navy"
-        style={reverse ? { animationDirection: 'reverse' } : undefined}
-      >
-        {words}
-        {words}
-      </div>
-    </div>
-  );
-}
-
-/** A hand-drawn padlock; the shackle lifts when it opens. */
-function Padlock({ open }: { open: boolean }) {
-  return (
-    <svg viewBox="0 0 120 150" className="h-full w-full overflow-visible" aria-hidden>
-      <path
-        d="M30 70 V48 a30 30 0 0 1 60 0 V70"
-        fill="none"
-        stroke="#0c2340"
-        strokeWidth="14"
-        strokeLinecap="round"
-        className="transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-        style={{ transform: open ? 'translateY(-16px) rotate(-14deg)' : undefined, transformOrigin: '90px 70px' }}
-      />
-      <path
-        d="M30 70 V48 a30 30 0 0 1 60 0 V70"
-        fill="none"
-        stroke="#d5dbe3"
-        strokeWidth="6"
-        strokeLinecap="round"
-        className="transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-        style={{ transform: open ? 'translateY(-16px) rotate(-14deg)' : undefined, transformOrigin: '90px 70px' }}
-      />
-      <rect x="12" y="66" width="96" height="76" rx="14" fill="#0b5cad" stroke="#0c2340" strokeWidth="4" />
-      <rect x="22" y="76" width="22" height="8" rx="4" fill="#ffffff" opacity="0.35" />
-      <circle cx="60" cy="98" r="9" fill="#0c2340" />
-      <path d="M56 104 L64 104 L62 122 L58 122 Z" fill="#0c2340" />
-    </svg>
-  );
-}
-
 /*
- * The "kepo yaaa?" screen shown while privacy mode is on: caution tape,
- * Reza in a hard hat, a swinging padlock and the password form. A wrong
- * password shakes the card; the right one opens the lock and loads the page.
+ * Shown while privacy mode is on: a quiet, centred screen with Reza's photo,
+ * a short note and the password field. A wrong password shakes the field;
+ * the right one swaps the lock badge open and loads the page.
  */
-export function LockScreen({ avatar, email }: { avatar: string; email: string }) {
+export function LockScreen({ name, avatar, email }: { name: string; avatar: string; email: string }) {
   const reduce = useReducedMotion();
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState<'idle' | 'checking' | 'wrong' | 'open'>('idle');
-  const [attempt, setAttempt] = useState(0);
+  const [fieldRef, animate] = useAnimate<HTMLDivElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,99 +34,134 @@ export function LockScreen({ avatar, email }: { avatar: string; email: string })
       window.setTimeout(() => {
         if (window.location.pathname === '/locked') window.location.replace('/');
         else window.location.reload();
-      }, 900);
+      }, 700);
     } else {
       setStatus('wrong');
-      setAttempt((n) => n + 1);
+      inputRef.current?.select();
+      if (!reduce) animate(fieldRef.current, { x: [0, -8, 8, -5, 5, 0] }, { duration: 0.4 });
     }
   };
 
+  const open = status === 'open';
+  const wrong = status === 'wrong';
+
   return (
-    <main className="grain relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-chalk px-5 py-32 text-navy">
-      <CautionTape className="top-6 -rotate-3" />
-      <CautionTape className="bottom-6 rotate-2" reverse />
+    <main className="relative flex min-h-svh flex-col overflow-hidden bg-paper text-ink">
+      {/* Faint dot grid that fades out toward the edges */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 [background-image:radial-gradient(var(--color-line-strong)_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"
+      />
 
-      <motion.div
-        key={attempt}
-        initial={attempt === 0 ? { opacity: 0, y: reduce ? 0 : 24 } : false}
-        animate={attempt === 0 ? { opacity: 1, y: 0 } : { x: reduce ? 0 : [0, -12, 12, -9, 9, -4, 4, 0] }}
-        transition={attempt === 0 ? { duration: 0.9, ease } : { duration: 0.5 }}
-        className="relative z-10 w-full max-w-lg text-center"
-      >
-        {/* Padlock swinging on its hook, with Reza peeking out in a hard hat */}
-        <div className="relative mx-auto h-36 w-56">
-          <div className="swing absolute left-6 top-0 h-32 w-24">
-            <Padlock open={status === 'open'} />
-          </div>
-          <div className="bob absolute right-2 top-6 w-24">
-            <svg viewBox="0 0 100 46" className="absolute -top-7 left-1/2 z-10 w-[86%] -translate-x-1/2 -rotate-6" aria-hidden>
-              <path d="M10 40 C10 10 90 10 90 40 Z" fill="#ffd23f" stroke="#0c2340" strokeWidth="4" strokeLinejoin="round" />
-              <path d="M44 14 h12 v26 h-12 z" fill="#ffd23f" stroke="#0c2340" strokeWidth="3" strokeLinejoin="round" />
-              <rect x="2" y="38" width="96" height="8" rx="4" fill="#ffd23f" stroke="#0c2340" strokeWidth="4" />
-            </svg>
-            <div className="aspect-square overflow-hidden rounded-full border-[5px] border-white bg-ice shadow-[0_8px_18px_rgba(12,35,64,0.3)]">
-              <img src={avatar} alt="" className="h-full w-full object-cover object-[50%_18%]" draggable={false} />
-            </div>
-          </div>
-        </div>
-
-        <h1 className="mt-8 font-marker text-[clamp(2.2rem,8vw,3.6rem)] uppercase leading-none">
-          Kepo yaaa?{' '}
-          <span className="inline-block origin-bottom animate-[wiggle_1.6s_ease-in-out_infinite] motion-reduce:animate-none" aria-hidden>
-            👀
+      <header className="wrap relative flex items-center justify-between gap-4 py-6">
+        <span className="t-small truncate font-medium">
+          <span className="sm:hidden">{name.split(' ').slice(0, 2).join(' ')}</span>
+          <span className="hidden sm:inline">{name}</span>
+        </span>
+        <span className="chip shrink-0">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inset-0 animate-ping rounded-full bg-amber-500/60 motion-reduce:hidden" />
+            <span className="relative h-1.5 w-1.5 rounded-full bg-amber-500" />
           </span>
-        </h1>
-        <p className="mx-auto mt-3 max-w-sm font-hand text-[1.9rem] font-semibold leading-tight">
-          Sabar yaa, portofolio ini lagi dalam <span className="text-flame">tahap pengembangan.</span>
-        </p>
+          Dalam pengembangan
+        </span>
+      </header>
 
-        <div className="mx-auto mt-6 max-w-xs">
-          <div className="flex items-center justify-between font-mono text-[0.68rem] font-bold uppercase">
-            <span>
-              Lagi dibangun<span className="loading-dots" />
-            </span>
-            <span className="text-ocean">hampir jadi</span>
-          </div>
-          <div className="mt-1.5 h-4 overflow-hidden rounded-full border-2 border-navy bg-white">
-            <div className="progress-stripes h-full rounded-full border-r-2 border-navy" />
-          </div>
-        </div>
-
-        <form onSubmit={submit} className="mx-auto mt-9 max-w-sm">
-          <label htmlFor="visitor-password" className="block font-mono text-[0.7rem] font-bold uppercase text-navy/70">
-            Punya password? Masuk di sini
-          </label>
-          <div className="mt-2 flex gap-2">
-            <input
-              id="visitor-password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (status === 'wrong') setStatus('idle');
-              }}
-              placeholder="Masukkan password"
-              aria-invalid={status === 'wrong'}
-              className="min-w-0 flex-1 rounded-full border-2 border-navy bg-white px-4 py-2.5 font-mono text-sm shadow-[3px_3px_0_#0c2340] outline-none placeholder:text-navy/40 focus:border-ocean"
+      <section className="relative flex flex-1 items-center justify-center px-5 py-10">
+        <motion.div
+          initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease }}
+          className="w-full max-w-[420px] text-center"
+        >
+          <div className="relative mx-auto w-fit">
+            <img
+              src={avatar}
+              alt=""
+              draggable={false}
+              className="h-[72px] w-[72px] rounded-full border border-line bg-accent-soft object-cover object-[50%_18%]"
             />
-            <button type="submit" disabled={!password || status === 'checking' || status === 'open'} className="btn-stamp btn-stamp-ocean shrink-0">
-              {status === 'checking' ? 'Cek…' : status === 'open' ? 'Yeay!' : 'Buka →'}
-            </button>
+            <span
+              className={`absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full text-white ring-4 ring-paper transition-colors duration-300 ${
+                open ? 'bg-emerald-600' : 'bg-ink'
+              }`}
+            >
+              {open ? <FiUnlock className="h-3.5 w-3.5" /> : <FiLock className="h-3.5 w-3.5" />}
+            </span>
           </div>
-          <p aria-live="polite" className="mt-3 min-h-[1.75rem] font-hand text-xl font-semibold">
-            {status === 'wrong' && <span className="text-flame">Yah, password-nya salah. Coba lagi ya!</span>}
-            {status === 'open' && <span className="text-ocean">Yeay, silakan masuk…</span>}
-          </p>
-        </form>
 
-        <p className="mt-2 font-mono text-[0.72rem] leading-relaxed text-navy/70">
-          Belum punya password? Minta ke Reza lewat{' '}
-          <a href={`mailto:${email}`} className="link-draw font-bold text-navy">
+          <h1 className="t-h2 mt-7">Portofolio ini masih privat</h1>
+          <p className="t-body mx-auto mt-3 max-w-[34ch] text-muted">
+            Lagi dirapikan sebelum dibuka untuk umum. Kalau kamu punya password, silakan masuk.
+          </p>
+
+          <form onSubmit={submit} className="mt-8">
+            <label htmlFor="visitor-password" className="sr-only">
+              Password
+            </label>
+            <div
+              ref={fieldRef}
+              className={`flex items-center gap-2 rounded-full border bg-surface p-1.5 pl-5 shadow-[0_1px_2px_rgba(10,10,10,0.04)] transition-[border-color,box-shadow] duration-200 ${
+                wrong
+                  ? 'border-red-300 ring-[3px] ring-red-500/10'
+                  : 'border-line-strong focus-within:border-ink focus-within:ring-[3px] focus-within:ring-ink/[0.06]'
+              }`}
+            >
+              <input
+                ref={inputRef}
+                id="visitor-password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (wrong) setStatus('idle');
+                }}
+                placeholder="Masukkan password"
+                aria-invalid={wrong}
+                aria-describedby="visitor-password-status"
+                disabled={open}
+                // The pill around it shows focus; the global :focus-visible
+                // outline would draw a second box inside it.
+                style={{ outline: 'none' }}
+                className="t-body min-w-0 flex-1 bg-transparent py-1.5 placeholder:text-faint"
+              />
+              <button
+                type="submit"
+                disabled={!password || status === 'checking' || open}
+                className={`btn shrink-0 px-4 py-2.5 text-paper disabled:cursor-not-allowed ${
+                  open ? 'bg-emerald-600' : 'bg-ink hover:bg-ink-2 disabled:opacity-40'
+                }`}
+              >
+                {status === 'checking' ? (
+                  'Memeriksa…'
+                ) : open ? (
+                  <>
+                    Terbuka <FiCheck className="h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    Masuk <FiArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </div>
+            <p id="visitor-password-status" aria-live="polite" className="t-small mt-3 min-h-[1.25rem]">
+              {wrong && <span className="text-red-600">Password-nya salah. Coba lagi, ya.</span>}
+              {open && <span className="text-emerald-700">Berhasil, membuka portofolio…</span>}
+            </p>
+          </form>
+        </motion.div>
+      </section>
+
+      <footer className="wrap relative py-6 text-center">
+        <p className="t-small text-muted">
+          Belum punya password? Minta ke{' '}
+          <a href={`mailto:${email}`} className="link-draw font-medium text-ink">
             {email}
           </a>
         </p>
-      </motion.div>
+      </footer>
     </main>
   );
 }
