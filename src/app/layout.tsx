@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Caveat, Geist, Permanent_Marker, Space_Mono } from 'next/font/google';
+import { Archivo, Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
 
@@ -8,23 +8,18 @@ const geist = Geist({
   variable: '--font-geist',
 });
 
-// Hand-made voice for the hero desk and the Work section: marker headlines,
-// handwritten notes and a typewriter-style mono for labels.
-const marker = Permanent_Marker({
+// Display face for the public site: its width axis runs from 62 (condensed)
+// to 125 (extended), so headlines can be set to fill a line exactly.
+const archivo = Archivo({
   subsets: ['latin'],
-  weight: '400',
-  variable: '--font-permanent-marker',
+  axes: ['wdth'],
+  style: ['normal', 'italic'],
+  variable: '--font-archivo',
 });
 
-const caveat = Caveat({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-caveat',
-});
-
-const spaceMono = Space_Mono({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-space-mono',
+  variable: '--font-geist-mono',
 });
 
 export const metadata: Metadata = {
@@ -35,10 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="id"
-      className={`${geist.variable} ${marker.variable} ${caveat.variable} ${spaceMono.variable} scroll-smooth`}
-    >
+    <html lang="id" className={`${geist.variable} ${archivo.variable} ${geistMono.variable} scroll-smooth`}>
       <body className="font-sans min-h-screen bg-paper text-ink antialiased">
         <SessionProvider>{children}</SessionProvider>
       </body>

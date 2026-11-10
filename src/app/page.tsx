@@ -4,9 +4,9 @@ import { PrivacyGate } from '@/components/PrivacyGate';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/sections/HeroSection';
-import { SkillsSection } from '@/components/sections/SkillsSection';
-import { ExperienceSection } from '@/components/sections/ExperienceSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { AboutSection } from '@/components/sections/AboutSection';
+import { SkillsSection } from '@/components/sections/SkillsSection';
 import { CertificatesSection } from '@/components/sections/CertificatesSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 
@@ -25,14 +25,14 @@ export default function Home() {
 
   return (
     <PrivacyGate>
-      <div className="flex min-h-screen flex-col">
+      <div className="site flex min-h-screen flex-col">
         <Navbar />
 
         <main className="flex-1">
-          <HeroSection profile={profile} projects={projects} />
+          <HeroSection profile={profile} />
           <ProjectsSection projects={projects} />
+          <AboutSection profile={profile} experiences={experiences} />
           <SkillsSection profile={profile} />
-          <ExperienceSection experiences={experiences} />
           <CertificatesSection certificates={certificates} />
           <ContactSection profile={profile} />
         </main>

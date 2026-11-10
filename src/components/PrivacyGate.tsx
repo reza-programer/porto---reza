@@ -14,7 +14,7 @@ export async function PrivacyGate({ children }: { children: React.ReactNode }) {
   const { locked, expiresAt } = await getAccess();
   if (locked) {
     const profile = getProfile();
-    return <LockScreen name={profile.name} avatar={profile.avatar || '/images/profile.png'} email={profile.email} />;
+    return <LockScreen name={profile.name} email={profile.email} />;
   }
   return (
     <>

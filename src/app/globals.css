@@ -20,22 +20,13 @@
 
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
-  /* Hand-made palette for the public site: an energy-company blue with
-     red and green accents, navy for ink, pale blues for paper */
-  --color-chalk: #f3f7fc;
-  --color-mist: #d6e6f6;
-  --color-ice: #a9cdf0;
-  --color-ocean: #0b5cad;
-  --color-ocean-deep: #08427d;
-  --color-navy: #0c2340;
-  --color-flame: #e2231a;
-  --color-leaf: #7ac143;
-  --color-leaf-soft: #d3ebbd;
-  --color-sun: #ffd23f;
+  /* Public site: warm off-white, black, and one lime accent */
+  --color-sheet: #efede8;
+  --color-sheet-2: #e3e1db;
+  --color-lime: #d2f04b;
 
-  --font-marker: var(--font-permanent-marker), 'Comic Sans MS', cursive;
-  --font-hand: var(--font-caveat), 'Segoe Print', cursive;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-display: var(--font-archivo), 'Arial Narrow', sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -56,7 +47,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-ocean);
+  background: var(--color-ink);
   color: #fff;
 }
 
@@ -284,226 +275,180 @@ body {
   --color-slate-950: #050505;
 }
 
-/* ------------------------------------------------------------------
-   Hand-made pieces (desk hero, Work section)
-   ------------------------------------------------------------------ */
 
-/* Chunky ink-bordered buttons with an offset shadow that presses in */
-.btn-stamp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: 2px solid var(--color-navy);
-  border-radius: 9999px;
-  padding: 0.7rem 1.2rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--color-navy);
-  box-shadow: 3px 3px 0 var(--color-navy);
-  transition: transform 0.15s, box-shadow 0.15s, background-color 0.2s;
-  cursor: pointer;
+/* ------------------------------------------------------------------
+   Public site — clean editorial: warm off-white, black type, one lime
+   accent, hairline rules. Headlines in wide heavy Archivo, labels in
+   tracked uppercase Geist.
+   ------------------------------------------------------------------ */
+.site {
+  background: var(--color-sheet);
+  color: var(--color-ink);
 }
-.btn-stamp:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--color-navy);
+.site :focus-visible {
+  outline-color: var(--color-ink);
 }
-.btn-stamp:active {
-  transform: translate(3px, 3px);
-  box-shadow: 0 0 0 var(--color-navy);
+.site ::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
 }
-.btn-stamp:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+/* A wider page than the admin's */
+.site .wrap {
+  max-width: 1840px;
+  padding-inline: clamp(1.25rem, 3.6vw, 3.5rem);
 }
-.btn-stamp-ocean {
-  background: var(--color-ocean);
-  color: #fff;
+
+/* The site's building blocks sit in the components layer, so a utility
+   on the element (leading-*, text-*, normal-case) still wins. */
+@layer components {
+  /* Headline type: heavy, wide Archivo */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: 'wdth' 112;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+  }
+  .wdth-75 {
+    font-variation-settings: 'wdth' 75;
+  }
+  .wdth-100 {
+    font-variation-settings: 'wdth' 100;
+  }
+  .wdth-112 {
+    font-variation-settings: 'wdth' 112;
+  }
+  .wdth-125 {
+    font-variation-settings: 'wdth' 125;
+  }
+
+  /* Section number, "01 /": light italic */
+  .numeral {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-variation-settings: 'wdth' 100;
+    letter-spacing: -0.02em;
+  }
+
+  /* Small tracked caps */
+  .label {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.35;
+    letter-spacing: 0.04em;
+  }
+
+  /* Buttons: a square black block, and an outline version */
+  .btn-ink,
+  .btn-outline-ink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    height: 3rem;
+    padding: 0 1.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-sheet);
+  }
+  .btn-ink:hover {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+  .btn-ink:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: var(--color-ink);
+    color: var(--color-sheet);
+  }
+  .btn-outline-ink {
+    border: 1px solid currentColor;
+  }
+  .btn-outline-ink:hover {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-sheet);
+  }
+
+  /* Round lime arrow on cards */
+  .arrow-dot {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background: var(--color-lime);
+    color: var(--color-ink);
+    transition: transform 0.4s var(--ease-expo);
+  }
+  .group:hover .arrow-dot {
+    transform: rotate(45deg);
+  }
+
+  /* Field written on a rule */
+  .rule-field {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    border-radius: 0;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: inherit;
+    outline: none;
+  }
+  .rule-field::placeholder {
+    color: currentColor;
+    opacity: 0.4;
+  }
+  .rule-field:focus {
+    border-bottom-color: var(--color-lime);
+  }
 }
-.btn-stamp-flame {
-  background: var(--color-flame);
-  color: #fff;
-}
-.btn-stamp-paper {
-  background: #fff;
-}
-/* Form field on the contact "order slip": a dashed write-in line */
-.slip-field {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 2px dashed rgba(12, 35, 64, 0.35);
-  border-radius: 0;
-  padding: 0.55rem 0;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--color-navy);
-}
-.slip-field::placeholder {
-  color: rgba(12, 35, 64, 0.4);
-}
-.slip-field:focus {
+.site .rule-field:focus-visible {
   outline: none;
-  border-bottom-style: solid;
-  border-bottom-color: var(--color-ocean);
 }
 
-/* Torn-receipt zigzag along the bottom edge */
-.receipt-edge {
-  height: 12px;
-  background:
-    linear-gradient(135deg, #fff 6px, transparent 0) 0 0 / 12px 12px repeat-x,
-    linear-gradient(-135deg, #fff 6px, transparent 0) 0 0 / 12px 12px repeat-x;
-}
-
-/* Section headline in marker caps, with an optional handwritten aside */
-.t-marker {
-  font-family: var(--font-marker);
-  text-transform: uppercase;
-  font-size: clamp(2.4rem, 5.2vw, 4.25rem);
-  line-height: 0.95;
-}
-
-/* ------------------------------------------------------------------
-   Hero stage, from laptop width up. The desk scene (1440×820) is as wide
-   as the screen allows, but no taller than the space under the navbar, so
-   the whole desk is always in view; on short screens it shrinks and the
-   room around it fills the sides. The intro is written on the empty wall
-   at its top-left, sized from the desk so the two scale together.
-   ------------------------------------------------------------------ */
-@media (min-width: 64rem) {
-  .hero {
-    height: min(100svh, calc(4rem + 56.94vw), 975px);
-    min-height: 560px;
-  }
-  .hero-stage {
-    /* Desk width: the full width, or less when the screen is short */
-    --w: min(100cqw, 175.6cqh, 1600px);
-    container-type: size;
-    height: 100%;
-  }
-  .hero-copy {
-    position: absolute;
-    z-index: 10;
-    top: calc(100cqh - var(--w) * 0.5694 + var(--w) * 0.045);
-    /* Use some of the spare wall left of a shrunk desk, then hold the text
-       back from the picture frame at 43% across the desk. */
-    left: max(1.5rem, calc((100cqw - var(--w)) * 0.2 + var(--w) * 0.05));
-    right: calc((100cqw - var(--w)) / 2 + var(--w) * 0.57);
-    width: auto;
-    max-width: none;
-    padding: 0;
-  }
-  .hero-desk {
-    position: absolute;
-    bottom: 0;
-    left: calc((100cqw - var(--w)) / 2);
-    width: var(--w);
-  }
-  .hero-eyebrow {
-    font-size: max(0.66rem, calc(var(--w) * 0.0082));
-  }
-  .hero-title {
-    font-size: calc(var(--w) * 0.04);
-  }
-  .hero-bio {
-    font-size: max(0.84rem, calc(var(--w) * 0.0108));
-    max-width: 36rem;
-  }
-}
-
-/* Paper grain laid over flat colour */
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.35;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.14 0 0 0 0 0.25 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Endless sideways ticker */
-@keyframes ticker {
+/* Slow spin for the circular "scroll down" badge */
+@keyframes spin-slow {
   to {
-    transform: translateX(-50%);
+    transform: rotate(360deg);
   }
 }
-.ticker {
-  animation: ticker 38s linear infinite;
+.spin-slow {
+  animation: spin-slow 18s linear infinite;
 }
 
-/* A sketch line that draws itself: give the path pathLength="1".
-   Hidden while undrawn, or round caps leave a dot where the empty dash sits. */
-.sketch-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  opacity: 0;
-  transition: stroke-dashoffset 0.45s var(--ease-expo), opacity 0.2s;
-}
-.is-active .sketch-line {
-  stroke-dashoffset: 0;
-  opacity: 1;
-}
-
-@keyframes steam-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  35% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-16px);
-  }
-}
-.steam {
-  transform-box: fill-box;
-  animation: steam-rise 2.8s ease-in-out infinite;
-}
-
-@keyframes caret-blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  100% {
+/* Fade in after a short wait, so a load that finishes quickly never flashes */
+@keyframes fade-in {
+  from {
     opacity: 0;
   }
 }
-.caret {
-  animation: caret-blink 1.1s steps(1) infinite;
-}
-
-@keyframes bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-3deg);
-  }
-  50% {
-    transform: translateY(-5px) rotate(2deg);
-  }
-}
-.bob {
-  animation: bob 3.4s ease-in-out infinite;
+.fade-in-late {
+  animation: fade-in 0.35s ease 0.15s both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .steam,
-  .caret,
-  .bob,
-  .ticker {
+  .spin-slow {
     animation: none;
-  }
-  .sketch-line {
-    transition: none;
   }
 }
 

@@ -20,5 +20,5 @@ export default async function LockedPage({ searchParams }: { searchParams: Promi
   if (!getSettings().privateMode && preview === undefined) redirect('/');
 
   const profile = getProfile();
-  return <LockScreen name={profile.name} avatar={profile.avatar || '/images/profile.png'} email={profile.email} />;
+  return <LockScreen name={profile.name} email={profile.email} />;
 }

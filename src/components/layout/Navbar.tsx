@@ -3,19 +3,20 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Sparkle } from '@/components/ui/Glyphs';
 
 const navItems = [
-  { no: '01', name: 'Work', href: 'projects' },
-  { no: '02', name: 'Skills', href: 'skills' },
-  { no: '03', name: 'Experience', href: 'experience' },
-  { no: '04', name: 'Certificates', href: 'certificates' },
+  { name: 'Work', href: 'projects' },
+  { name: 'About', href: 'about' },
+  { name: 'Stack', href: 'skills' },
+  { name: 'Contact', href: 'contact' },
 ];
 
-const sectionIds = ['home', ...navItems.map((i) => i.href), 'contact'];
+const sectionIds = ['home', ...navItems.map((i) => i.href)];
 
+/** A plain bar under a hairline: wordmark left, links and a round button right. */
 export const Navbar: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
@@ -28,10 +29,8 @@ export const Navbar: React.FC = () => {
   }, [open]);
 
   useEffect(() => {
+    if (!isHomePage) return;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 24);
-      if (!isHomePage) return;
-
       const pos = window.scrollY + window.innerHeight * 0.35;
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const section = document.getElementById(sectionIds[i]);
@@ -41,7 +40,6 @@ export const Navbar: React.FC = () => {
         }
       }
     };
-
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -51,89 +49,86 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 border-b-[3px] border-navy bg-navy text-white transition-shadow duration-300 ${
-          scrolled ? 'shadow-[0_6px_20px_-8px_rgba(12,35,64,0.6)]' : ''
-        }`}
-      >
-        <div className="wrap flex h-[61px] items-center justify-between gap-6">
-          <Link href="/#home" className="flex items-baseline gap-3" onClick={() => setOpen(false)}>
-            <span className="font-marker text-[1.45rem] leading-none">
-              Reza<span className="text-flame">.</span>
-            </span>
-            <span className="hidden font-mono text-[0.68rem] font-bold uppercase tracking-[0.08em] text-ice lg:inline">
-              Fullstack &amp; QA
-            </span>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-ink/15 bg-sheet/90 backdrop-blur-md">
+        <div className="wrap flex h-[72px] items-center justify-between gap-6">
+          <Link href="/#home" onClick={() => setOpen(false)} className="display wdth-112 text-[1.55rem] leading-none tracking-[-0.04em]">
+            Kezot.
           </Link>
 
-          <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
-            {navItems.map((item) => {
-              const active = isHomePage && activeSection === item.href;
-              return (
-                <a
-                  key={item.href}
-                  href={hrefFor(item.href)}
-                  className={`group relative font-mono text-[0.75rem] font-bold uppercase tracking-[0.06em] transition-colors ${
-                    active ? 'text-white' : 'text-white/65 hover:text-white'
-                  }`}
-                >
-                  {item.name}
-                  <span
-                    className={`absolute -bottom-1.5 left-0 h-[3px] rounded-full bg-flame transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                      active ? 'w-full' : 'w-0 group-hover:w-full'
+          <div className="flex items-center gap-10">
+            <nav className="hidden items-center gap-10 md:flex" aria-label="Primary">
+              {navItems.map((item) => {
+                const active = isHomePage && activeSection === item.href;
+                return (
+                  <a
+                    key={item.href}
+                    href={hrefFor(item.href)}
+                    className={`relative text-[0.75rem] font-medium uppercase tracking-[0.06em] transition-opacity ${
+                      active ? 'opacity-100' : 'opacity-70 hover:opacity-100'
                     }`}
-                  />
-                </a>
-              );
-            })}
-          </nav>
+                  >
+                    {item.name}
+                    <span
+                      aria-hidden
+                      className={`absolute -bottom-1.5 left-0 h-px bg-ink transition-[width] duration-300 ${active ? 'w-full' : 'w-0'}`}
+                    />
+                  </a>
+                );
+              })}
+            </nav>
 
-          <a
-            href={hrefFor('contact')}
-            className="hidden items-center gap-2 rounded-full border-2 border-white bg-flame px-4 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.04em] transition-transform duration-200 hover:-translate-y-0.5 md:inline-flex"
-          >
-            Contact <span aria-hidden>↗</span>
-          </a>
-
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="-mr-2 cursor-pointer p-2 font-mono text-[0.75rem] font-bold uppercase md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-          >
-            {open ? 'Close' : 'Menu'}
-          </button>
+            {/* Round button: the contact link on desktop, the menu on phones */}
+            <a
+              href={hrefFor('contact')}
+              aria-label="Contact"
+              className="hidden h-10 w-10 items-center justify-center rounded-full bg-ink text-sheet transition-colors hover:bg-lime hover:text-ink md:flex"
+            >
+              <Sparkle filled className="h-3.5 w-3.5" />
+            </a>
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-colors md:hidden ${
+                open ? 'bg-lime text-ink' : 'bg-ink text-sheet'
+              }`}
+            >
+              <Sparkle filled className={`h-3.5 w-3.5 transition-transform duration-500 ${open ? 'rotate-45' : ''}`} />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile menu — kept outside <header> so the fixed panel is positioned
-          against the viewport rather than the header. */}
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col justify-between bg-navy px-5 pb-8 pt-6 text-white transition-[opacity,visibility] duration-300 md:hidden ${
+        className={`fixed inset-x-0 bottom-0 top-[72px] z-40 flex flex-col justify-between bg-sheet px-5 pb-8 pt-6 transition-[opacity,visibility] duration-300 md:hidden ${
           open ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
       >
         <nav className="flex flex-col" aria-label="Mobile">
-          {[...navItems, { no: '05', name: 'Contact', href: 'contact' }].map((item, i) => (
+          {navItems.map((item, i) => (
             <a
               key={item.href}
               href={hrefFor(item.href)}
               onClick={() => setOpen(false)}
-              className="flex items-baseline justify-between border-b-2 border-white/15 py-4"
+              className="flex items-baseline justify-between border-b border-ink/15 py-4"
               style={{
                 transition: 'transform 600ms cubic-bezier(0.16,1,0.3,1), opacity 600ms',
-                transitionDelay: open ? `${i * 40}ms` : '0ms',
+                transitionDelay: open ? `${i * 45}ms` : '0ms',
                 transform: open ? 'none' : 'translateY(12px)',
                 opacity: open ? 1 : 0,
               }}
             >
-              <span className="font-marker text-[2rem] uppercase leading-none">{item.name}</span>
-              <span className="font-mono text-xs tabular-nums text-ice">{item.no}</span>
+              <span className="display wdth-112 text-[2.6rem]">{item.name}</span>
+              <span className="numeral text-lg">0{i + 1}</span>
             </a>
           ))}
         </nav>
-        <div className="font-hand text-2xl text-ice">Kuningan, Indonesia</div>
+        <div className="label flex items-center justify-between text-ink/60">
+          <span>Kuningan, Indonesia</span>
+          <span>© {new Date().getFullYear()}</span>
+        </div>
       </div>
     </>
   );

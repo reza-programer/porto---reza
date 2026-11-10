@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { FiArrowLeft } from 'react-icons/fi';
 import { getProfile, getExperience, getCertificates, getProjects } from '@/lib/data';
 import { formatTags, formatTitle } from '@/lib/project-meta';
 import { PrintButton } from '@/components/ui/PrintButton';
 import { PrivacyGate } from '@/components/PrivacyGate';
+import { Asterisk } from '@/components/ui/Glyphs';
 import { isLocked, lockedMetadata } from '@/lib/privacy';
 
 // Rendered per request: what a visitor sees depends on their privacy cookie.
@@ -19,9 +19,10 @@ export async function generateMetadata() {
 }
 
 function Heading({ children }: { children: React.ReactNode }) {
-  return <h2 className="eyebrow col-span-12 text-ink md:col-span-3 print:col-span-3">{children}</h2>;
+  return <h2 className="label col-span-12 md:col-span-3 print:col-span-3">{children}</h2>;
 }
 
+/* The CV as a single trimmed sheet: crop marks on screen, plain A4 in print. */
 export default function CVPage() {
   const profile = getProfile();
   const experiences = getExperience();
@@ -37,78 +38,85 @@ export default function CVPage() {
 
   return (
     <PrivacyGate>
-      <div className="min-h-screen bg-paper px-4 py-6 sm:px-6 sm:py-10 print:bg-white print:p-0">
-        <div className="mx-auto mb-6 flex max-w-4xl items-center justify-between print:hidden">
-          <Link href="/" className="eyebrow group inline-flex items-center gap-2 transition-colors hover:text-ink">
-            <FiArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" /> Back to portfolio
+      <div className="site min-h-screen px-4 py-6 sm:px-6 sm:py-10 print:bg-white print:p-0">
+        <div className="label mx-auto mb-10 flex max-w-4xl items-center justify-between print:hidden">
+          <Link href="/" className="group flex items-center gap-2 hover:opacity-100">
+            <span aria-hidden className="transition-transform duration-300 group-hover:-translate-x-1">
+              ←
+            </span>
+            Portfolio
           </Link>
           <PrintButton />
         </div>
 
-        <article className="mx-auto max-w-4xl rounded-2xl border border-line bg-surface p-7 shadow-[0_40px_80px_-50px_rgba(0,0,0,0.25)] sm:p-12 print:max-w-none print:rounded-none print:border-0 print:p-0 print:shadow-none">
-          {/* Header */}
-          <header className="flex flex-col gap-6 border-b border-line pb-8 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-center gap-5">
-              <img
-                src={profile.avatar || '/images/profile.png'}
-                alt={profile.name}
-                className="h-20 w-20 shrink-0 rounded-xl object-cover object-[50%_18%]"
-              />
-              <div>
-                <h1 className="t-h2">{profile.name}</h1>
-                <p className="t-body mt-1 text-muted">{profile.title}</p>
-              </div>
+        <article className="relative mx-auto max-w-4xl bg-white p-7 sm:p-12 print:max-w-none print:p-0">
+          
+
+          <header className="border-b border-ink pb-8">
+            <div className="label flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Asterisk className="h-4 w-4 text-lime print:hidden" /> Curriculum Vitae
+              </span>
+              <span>{new Date().getFullYear()}</span>
             </div>
-            <ul className="t-small space-y-0.5 text-ink-2 sm:text-right">
-              {contacts.map((c) => (
-                <li key={c} className="truncate">
-                  {c}
-                </li>
-              ))}
-            </ul>
+            <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between print:flex-row print:items-end">
+              <div className="flex items-end gap-5">
+                <img
+                  src={profile.avatar || '/images/profile.png'}
+                  alt={profile.name}
+                  className="h-24 w-20 shrink-0 object-cover object-[50%_18%] grayscale"
+                />
+                <div>
+                  <h1 className="display wdth-112 text-[clamp(2rem,4.4vw,3rem)]">{profile.name}</h1>
+                  <p className="label mt-2">{profile.title}</p>
+                </div>
+              </div>
+              <ul className="label space-y-0.5 normal-case sm:text-right print:text-right">
+                {contacts.map((c) => (
+                  <li key={c} className="truncate">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </header>
 
-          <p className="t-body border-b border-line py-6 text-ink-2">{profile.bio}</p>
+          <p className="t-body border-b border-ink py-6 text-ink-2">{profile.bio}</p>
 
-          {/* Experience */}
-          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-ink py-8">
             <Heading>Experience</Heading>
             <div className="col-span-12 space-y-7 md:col-span-9 print:col-span-9">
               {experiences.map((exp) => (
                 <div key={exp.id} className="break-inside-avoid">
                   <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
-                    <h3 className="t-h3">{exp.title}</h3>
-                    <span className="t-small text-muted">{exp.period}</span>
+                    <h3 className="text-[1.05rem] font-semibold leading-tight">{exp.title}</h3>
+                    <span className="label text-muted">{exp.period}</span>
                   </div>
-                  <div className="t-small text-ink-2">
+                  <div className="t-small mt-0.5 text-ink-2">
                     {exp.company}
                     {exp.location ? ` · ${exp.location}` : ''}
                   </div>
                   <p className="t-small mt-2 text-muted">{exp.description}</p>
-                  {exp.skills?.length > 0 && (
-                    <p className="t-small mt-2 text-ink-2">{formatTags(exp.skills).join(' · ')}</p>
-                  )}
+                  {exp.skills?.length > 0 && <p className="label mt-2 text-ink-2">{formatTags(exp.skills).join(' · ')}</p>}
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Projects */}
-          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-ink py-8">
             <Heading>Key projects</Heading>
             <div className="col-span-12 grid gap-x-6 gap-y-5 sm:grid-cols-2 md:col-span-9 print:col-span-9 print:grid-cols-2">
               {projects.slice(0, 4).map((p) => (
                 <div key={p.id} className="break-inside-avoid">
-                  <h3 className="t-body font-semibold">{p.title.trim()}</h3>
+                  <h3 className="text-[0.98rem] font-semibold leading-tight">{p.title.trim()}</h3>
                   <p className="t-small mt-1 line-clamp-2 text-muted">{p.description.replace(/\s+/g, ' ').trim()}</p>
-                  <p className="t-small mt-1 text-ink-2">{formatTags(p.tags).join(' · ')}</p>
+                  <p className="label mt-1.5 text-ink-2">{formatTags(p.tags).join(' · ')}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Skills */}
-          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-line py-8">
+          <section className="grid grid-cols-12 gap-x-6 gap-y-4 border-b border-ink py-8">
             <Heading>Skills &amp; tools</Heading>
             <div className="col-span-12 grid gap-6 sm:grid-cols-3 md:col-span-9 print:col-span-9 print:grid-cols-3">
               {profile.skills?.map((cat) => (
@@ -124,14 +132,13 @@ export default function CVPage() {
             </div>
           </section>
 
-          {/* Certificates */}
           <section className="grid grid-cols-12 gap-x-6 gap-y-4 pt-8">
             <Heading>Certifications</Heading>
             <ul className="col-span-12 grid gap-x-6 gap-y-3 sm:grid-cols-2 md:col-span-9 print:col-span-9 print:grid-cols-2">
               {certificates.map((cert) => (
                 <li key={cert.id} className="break-inside-avoid">
                   <div className="t-small font-semibold text-ink">{formatTitle(cert.title)}</div>
-                  <div className="t-small text-muted">
+                  <div className="label text-muted">
                     {cert.issuer} · {cert.date}
                   </div>
                 </li>
