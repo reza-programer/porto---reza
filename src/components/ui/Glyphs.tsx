@@ -43,29 +43,3 @@ export function RingText({ text, children, className = 'h-32 w-32' }: { text: st
     </div>
   );
 }
-
-/** "SCROLL DOWN" set round a circle that turns slowly, with an arrow in the middle. */
-export function ScrollBadge({ href = '#projects', className = 'h-32 w-32' }: { href?: string; className?: string }) {
-  return (
-    <a href={href} aria-label="Scroll down" className={`group relative block ${className}`}>
-      <svg viewBox="0 0 100 100" className="spin-slow absolute inset-0 h-full w-full" aria-hidden>
-        <defs>
-          <path id="scroll-ring" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0" />
-        </defs>
-        <text fontSize="9.6" fontWeight="500" letterSpacing="2.6" fill="currentColor">
-          <textPath href="#scroll-ring">SCROLL DOWN · SCROLL DOWN ·</textPath>
-        </text>
-      </svg>
-      <svg
-        viewBox="0 0 24 24"
-        className="absolute left-1/2 top-1/2 h-[30%] w-[30%] -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover:rotate-45"
-        aria-hidden
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-      >
-        <path d="M5 19 19 5M8 5h11v11" />
-      </svg>
-    </a>
-  );
-}

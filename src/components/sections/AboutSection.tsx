@@ -4,16 +4,10 @@ import { Reveal } from '@/components/ui/Reveal';
 import type { Experience, Profile } from '@/types';
 
 /*
- * "02 / About me": one sentence in large type, three numbers, and the jobs
- * as a plain list under a hairline.
+ * "02 / About me": one sentence in large type, the short bio, and the jobs
+ * as a plain list under a hairline. (The numbers live in the hero.)
  */
 export const AboutSection: React.FC<{ profile: Profile; experiences: Experience[] }> = ({ profile, experiences }) => {
-  const stats = [
-    { value: `${profile.stats.projectsCompleted}+`, label: 'Projects' },
-    { value: `${profile.stats.yearsExperience}+`, label: 'Years' },
-    { value: String(profile.stats.certificatesEarned), label: 'Certificates' },
-  ];
-
   return (
     <section id="about" className="border-b border-ink/15 py-20 sm:py-28">
       <div className="wrap grid grid-cols-12 gap-x-6 gap-y-12">
@@ -32,14 +26,7 @@ export const AboutSection: React.FC<{ profile: Profile; experiences: Experience[
             </p>
           </Reveal>
 
-          <dl className="mt-14 grid grid-cols-3 border-y border-ink/15">
-            {stats.map((s, i) => (
-              <div key={s.label} className={`flex flex-col-reverse py-6 ${i ? 'border-l border-ink/15 pl-5 sm:pl-8' : ''}`}>
-                <dt className="label mt-2 text-ink/60">{s.label}</dt>
-                <dd className="display wdth-112 text-[clamp(2.4rem,4.6vw,4.2rem)] leading-none">{s.value}</dd>
-              </div>
-            ))}
-          </dl>
+          <p className="mt-8 max-w-[40rem] text-[1.02rem] leading-relaxed text-ink/65">{profile.bio}</p>
 
           <div id="experience" className="mt-16 scroll-mt-28">
             <div className="label flex items-center justify-between border-b border-ink/15 pb-3">

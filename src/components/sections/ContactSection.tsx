@@ -70,7 +70,7 @@ export const ContactSection: React.FC<{ profile: Profile }> = ({ profile }) => {
             {profile.email}
           </a>
 
-          <div className="mt-14 grid grid-cols-12 gap-x-8 gap-y-12">
+          <div className="mt-14 grid grid-cols-12 gap-x-6 gap-y-12 lg:gap-x-8">
             <ul className="col-span-12 border-t border-sheet/20 md:col-span-5">
               {channels.map((c) => (
                 <li key={c.label} className="border-b border-sheet/20">
